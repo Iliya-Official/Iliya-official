@@ -39,8 +39,8 @@
   <div class="sidebar-top">
     <div class="coin-wrapper">
       <div class="coin">
-        <img src="assets/image/mypic.png" alt="Logo" class="coin-face front" />
-        <img src="assets/logo/mylogo3.png" alt="Profile" class="coin-face back" />
+        <img src="assets/image/mypic.png" loading="lazy"  alt="Logo" class="coin-face front" />
+        <img src="assets/logo/mylogo3.png" loading="lazy"  alt="Profile" class="coin-face back" />
       </div>
     </div>
     <button class="hamburger" onclick="toggleMenu()">☰</button>
@@ -57,8 +57,8 @@
     <main class="main-content">
      <section id="about" class="public-section hidden">
   <!-- ویدیو پس‌زمینه -->
-  <video autoplay muted loop playsinline class="about-bg-video">
-    <source src="assets/backvid-about/22449-327996264.mp4" type="video/mp4">
+  <video autoplay muted loop playsinline preload="none" class="about-bg-video">
+    <source src="assets/backvid-about/backvid.mp4" type="video/mp4">
     مرورگر شما از ویدیو پشتیبانی نمی‌کند.
   </video>
   <!-- محتوای متن -->
@@ -701,4 +701,5 @@ translateAboutSection().then(() => {
  
   </script>
 </body>
+
 </html>
