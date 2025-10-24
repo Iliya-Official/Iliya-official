@@ -73,10 +73,10 @@ html[dir="ltr"] {
   width: auto;
   height: auto;
   transform: translate(-50%, -50%);
-  object-fit: cover; 
+  object-fit: cover;
   z-index: 0;
-  background: black; 
-  filter: brightness(0.6) blur(2px);
+  background: black;
+  filter: brightness(0.6) blur(1px);
 }
 
 
@@ -132,7 +132,7 @@ html[dir="ltr"] {
 }
 
 .language-btn:hover {
-  color: #ccc;
+  color: #023884;
 }
 
 .flag-icon {
@@ -206,6 +206,19 @@ html[dir="ltr"] {
   align-items: center;
   width: 100%;
 }
+
+/* .sidebar img {
+  max-width: 100%;
+  object-fit: cover;
+  display: block;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+
+} */
 
 
 .coin-wrapper {
@@ -489,7 +502,7 @@ html[dir="ltr"] {
 
 .site-footer {
   height: 50px;
-  background-color: #888888de;
+  background-color: #ccc;
   color: #444444;
   font-size: 0.9em;
   display: flex;
@@ -500,6 +513,7 @@ html[dir="ltr"] {
   padding: 10px;
   box-sizing: border-box;
   text-align: center;
+  margin-top: auto;
 }
 
 .portfolio-gallery {
@@ -740,7 +754,7 @@ html[dir="ltr"] {
 @media screen and (max-width: 700px) {
   .container {
     flex-direction: column;
-    height: calc(100vh - 80px);
+    min-height: 0;
   }
 
   .sidebar {
@@ -756,7 +770,7 @@ html[dir="ltr"] {
     flex-direction: column;
     /* height: 100vh; */
     min-height: 0;
-    overflow: hidden;
+    /* overflow: hidden; */
     overflow-y: auto;
   }
 
@@ -769,31 +783,55 @@ html[dir="ltr"] {
   #blog {
   overflow-y: auto;
   max-height: 100%;
+  color: #000;
 }
 
+.menu {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+    text-align: center;
+  }
 
 
-  .language-menu {
+.language-menu {
     top: 50px;
     right: 10px;
   }
 
-  .site-footer {
+  /* .site-footer {
   font-size: 0.8em;
   padding: 10px;
-  /* margin-top: auto; */
+  margin-top: auto;
   height: 50px;
   flex-shrink: 0;
-  }
+  } */
+
+  .site-footer {
+  height: 50px;
+  background-color: #ccc;
+  color: #444444;
+  font-size: 0.9em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 10px;
+  box-sizing: border-box;
+  text-align: center;
+  margin-top: auto;
+}
 }
 
 @media screen and (orientation: landscape) {
-  /* html, body {
-    overflow-y: auto; 
-  } */
+  html, body {
+    overflow-y: hidden; 
+  }
 
   .main-content {
-  overflow-y: auto;
+  overflow-y: auto !important;
   min-height: 0;
   flex: 1;
   display: flex;
@@ -804,16 +842,33 @@ html[dir="ltr"] {
   .content-section {
   flex: 1;
   padding: 15px;
-  overflow-y: auto;
+  overflow-y: auto !important;
   max-height: calc(100vh - 130px);
   min-height: 0;
   }
 
-  .site-footer {
+  /* .site-footer {
   height: 50px;
   flex-shrink: 0;
   padding: 10px;
   background-color: #ccc;
+  margin-top: auto;
+} */
+
+.site-footer {
+  height: 50px;
+  background-color: #ccc;
+  color: #444444;
+  font-size: 0.9em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 10px;
+  box-sizing: border-box;
+  text-align: center;
+  margin-top: auto;
 }
 
 }
@@ -822,27 +877,36 @@ html[dir="ltr"] {
   html, body {
     height: 100%;
     overflow: hidden;
-    overflow: auto;
   }
 
   .container {
     flex-direction: row;
-    height: calc(100vh - 80px);
+    height: calc(100vh - 50px);
   }
 
   .sidebar {
-    width: 180px; 
+    width: 180px;
     flex-shrink: 0;
     flex-direction: column;
     align-items: center;
+    padding: 10px;
   }
+
+   /* .sidebar img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto;
+  } */
 
   .main-content {
     flex: 1;
-    overflow: hidden;
+    overflow: auto;
     display: flex;
     flex-direction: column;
-    min-height: 0;
+    min-height: 0 !important;
   }
 
   .content-section {
@@ -852,48 +916,70 @@ html[dir="ltr"] {
     min-height: 0;
   }
 
-  .site-footer {
+  /* .site-footer {
   height: 50px;
   flex-shrink: 0;
   padding: 10px;
   background-color: #ccc;
+  margin-top: auto;
+  } */
 
-    /* margin-top: auto; */
-  }
+  .site-footer {
+  height: 50px;
+  background-color: #ccc;
+  color: #444444;
+  font-size: 0.9em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 10px;
+  box-sizing: border-box;
+  text-align: center;
+  margin-top: auto;
+}
 
-   .menu {
+  .menu {
+    display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 10px;
+    margin-top: 10px;
   }
 
   .coin-wrapper {
     margin-bottom: 15px;
+  }
+
+   .hamburger {
+    display: none;
   }
 }
 
 @media screen and (orientation: landscape) and (max-height: 450px) {
   html, body {
     height: 100%;
-    /* overflow: hidden; */
-    overflow: auto;
+    overflow: hidden;
   }
 
   .container {
     flex-direction: row;
-    height: calc(100vh - 80px);
+    min-height: 0;
   }
 
   .sidebar {
-    width: 180px;
+    width: 170px;
     flex-shrink: 0;
     padding: 10px;
     flex-direction: row;
     align-items: center;
+    display: block;
   }
 
   .main-content {
     flex: 1;
-    overflow: hidden;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     min-height: 0;
@@ -904,6 +990,7 @@ html[dir="ltr"] {
     overflow-y: auto;
     padding: 15px;
     min-height: 0;
+    max-height: calc(100dvh - 130px);
   }
 
   .site-footer {
@@ -911,18 +998,21 @@ html[dir="ltr"] {
   flex-shrink: 0;
   padding: 10px;
   background-color: #ccc;
-    /* margin-top: auto; */
+  margin-top: auto;
   }
 
    .coin {
     width: 120px;
     height: 120px;
+    position: relative;
   }
 
   .coin-face {
     width: 120px;
     height: 120px;
     object-fit: cover;
+    position: absolute;
+    border-radius: 50%;
   }
 
   .menu a {
@@ -936,8 +1026,8 @@ html[dir="ltr"] {
   }
 
   .coin-wrapper {
-    margin-bottom: 15px;
-    height: 120px;
+    margin-bottom: auto;
+    height: 115px;
     overflow: hidden;
   }
 }
@@ -945,8 +1035,8 @@ html[dir="ltr"] {
 @media screen and (max-width: 585px) and (orientation: portrait) {
   .sidebar {
     flex-direction: column;
-    align-items: stretch;
-    padding: 10px;
+    align-items: center;
+    /* padding: 10px; */
   }
 
    .sidebar-top {
@@ -968,7 +1058,16 @@ html[dir="ltr"] {
   .hamburger {
     display: block;
   }
+
+  .site-footer {
+  height: 50px;
+  flex-shrink: 0;
+  padding: 10px;
+  background-color: #ccc;
+  margin-top: auto;
 }
+}
+
 
 @media screen and (max-width: 585px) and (orientation: landscape) {
   .sidebar {
@@ -986,6 +1085,24 @@ html[dir="ltr"] {
   .hamburger {
     display: none;
   }
+
+    .main-content {
+  overflow-y: auto;
+  min-height: 0;
+
+}
+
+.container {
+  min-height: calc(100dvh - 50px); 
+}
+
+.site-footer {
+  height: 50px;
+  flex-shrink: 0;
+  padding: 10px;
+  background-color: #ccc;
+  margin-top: auto;
+}
 }
 
 @supports (-webkit-touch-callout: none) {
@@ -1007,8 +1124,27 @@ html[dir="ltr"] {
   }
   #about .about-content {
     font-size: 0.9rem;     /* متن کوچیک‌تر تا جا بشه */
-    padding: 20px 10px;
+    padding: 10px 10px 100px;
+    overflow-y: auto;
   }
+
+   .container {
+  min-height: 0;
+  flex-direction: row;
+}
+
+.site-footer {
+    height: 50px;
+    flex-shrink: 0;
+    padding: 10px;
+    background-color: #ccc;
+    margin-top: auto;
+  }
+}
+
+/* ✅ اطمینان از نمایش پنل ادمین پس از لاگین */
+#admin-panel:not(.hidden) {
+  display: block !important;
 }
 
 
