@@ -563,15 +563,28 @@ async function translateLongText(text, targetLang) {
 
 // ✅ ترجمه خودکار محتوا (بلاگ یا درباره من)
 async function autoTranslateContent(contentFa) {
-  const en = await translateTextSmart(contentFa, "fa", "en");
-  const ar = await translateTextSmart(contentFa, "fa", "ar");
+  if (!contentFa || typeof contentFa !== "string") return { fa: "", en: "", ar: "" };
+
+  const maxChunk = 400; // محدودیت MyMemory
+  const chunks = contentFa.match(new RegExp(`.{1,${maxChunk}}`, "g")) || [];
+
+  let en = "", ar = "";
+
+  for (const chunk of chunks) {
+    const enPart = await translateTextSmart(chunk, "fa", "en");
+    const arPart = await translateTextSmart(chunk, "fa", "ar");
+    en += enPart + " ";
+    ar += arPart + " ";
+    await new Promise(r => setTimeout(r, 1200)); // فاصله بین درخواست‌ها برای جلوگیری از 429
+  }
 
   return {
     fa: contentFa,
-    en: en || contentFa,
-    ar: ar || contentFa
+    en: en.trim() || contentFa,
+    ar: ar.trim() || contentFa
   };
 }
+
 
 
 function cleanText(t) {
