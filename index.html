@@ -351,14 +351,6 @@ function loginAdmin() {
   }
 }
 
-// function logoutAdmin() {
-//   document.getElementById('admin-login').classList.remove('hidden');
-//   document.getElementById('admin-panel').classList.add('hidden');
-//   document.getElementById('admin-logout-btn').classList.add('hidden');
-//   document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
-//   showSection('about');
-// }
-
 function logoutAdmin() {
   const loginBox = document.getElementById('admin-login');
   const adminPanel = document.getElementById('admin-panel');
@@ -783,7 +775,6 @@ async function translateTextSmart(text, source = "fa", target = "en") {
 
     const res = await fetch(`${scriptUrl}?${params.toString()}`, {
       method: "GET",
-      // دقت: هیچ هدر غیرساده‌ای (مثل Content-Type: application/json) نذار — باعث preflight میشه
     });
 
     if (!res.ok) {
