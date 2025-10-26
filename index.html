@@ -774,25 +774,33 @@ function openPreview(path) {
 async function translateTextSmart(text, source = "fa", target = "en") {
   if (!text || typeof text !== "string") return "";
   try {
-    const res = await fetch("https://script.google.com/macros/s/AKfycbzQP25LIwXN_fZnBwXkGxc5ww7gHOtPgz3A7hHfehgl9uZs8lrgcSPXNXcCOJSaj3AB/exec", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        text,
-        target,
-        key: "IliyaTranslate2025" // ✅ همان کلیدی که در Apps Script گذاشتی
-      })
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbzQP25LIwXN_fZnBwXkGxc5ww7gHOtPgz3A7hHfehgl9uZs8lrgcSPXNXcCOJSaj3AB/exec"; // ← لینک خودت
+    const params = new URLSearchParams({
+      text: text,
+      target: target,
+      key: "IliyaTranslate2025"
     });
+
+    const res = await fetch(`${scriptUrl}?${params.toString()}`, {
+      method: "GET",
+      // دقت: هیچ هدر غیرساده‌ای (مثل Content-Type: application/json) نذار — باعث preflight میشه
+    });
+
+    if (!res.ok) {
+      console.warn("Translate endpoint returned not ok:", res.status);
+      return text;
+    }
 
     const data = await res.json();
     if (data.translatedText) return data.translatedText;
-    console.warn("Translation failed:", data.error || "Unknown error");
+    console.warn("Translation failed:", data.error || data);
     return text;
   } catch (err) {
     console.error("🔥 Translation error:", err);
     return text;
   }
 }
+
 
 
 
