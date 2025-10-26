@@ -351,6 +351,14 @@ function loginAdmin() {
   }
 }
 
+// function logoutAdmin() {
+//   document.getElementById('admin-login').classList.remove('hidden');
+//   document.getElementById('admin-panel').classList.add('hidden');
+//   document.getElementById('admin-logout-btn').classList.add('hidden');
+//   document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
+//   showSection('about');
+// }
+
 function logoutAdmin() {
   const loginBox = document.getElementById('admin-login');
   const adminPanel = document.getElementById('admin-panel');
@@ -547,32 +555,40 @@ function filterBlogs(cat) {
 }
 
 
+// ✅ ترجمه سریع و پایدار متن‌های بلند با Google Script
 async function translateLongText(text, targetLang) {
-  const sentences = text.split(/(?<=[.؟!])\s+/);
-  const translatedSentences = [];
-  for (const sentence of sentences) {
-    const translated = await translateText(sentence, targetLang);
-    translatedSentences.push(translated);
+  if (!text || typeof text !== "string") return "";
+
+  const endpoint = "https://script.google.com/macros/s/AKfycbzQP25LIwXN_fZnBwXkGxc5ww7gHOtPgz3A7hHfehgl9uZs8lrgcSPXNXcCOJSaj3AB/exec";
+  const key = "IliyaTranslate2025";
+
+  // تقسیم متن به بخش‌های 350 کاراکتری
+  const chunks = text.match(/.{1,350}/g) || [];
+  const results = [];
+
+  for (const chunk of chunks) {
+    const url = `${endpoint}?text=${encodeURIComponent(chunk)}&target=${targetLang}&key=${key}`;
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      results.push(data.translatedText || chunk);
+      await new Promise(r => setTimeout(r, 300)); // تاخیر خیلی کوتاه
+    } catch (err) {
+      console.error("⚠️ Translate failed for chunk:", err);
+      results.push(chunk);
+    }
   }
-  return translatedSentences.join(' ');
+
+  return results.join(" ");
 }
 
 // ✅ ترجمه خودکار محتوا (بلاگ یا درباره من)
 async function autoTranslateContent(contentFa) {
-  if (!contentFa || typeof contentFa !== "string") return { fa: "", en: "", ar: "" };
+  if (!contentFa || typeof contentFa !== "string") 
+    return { fa: "", en: "", ar: "" };
 
-  const maxChunk = 400; // محدودیت MyMemory
-  const chunks = contentFa.match(new RegExp(`.{1,${maxChunk}}`, "g")) || [];
-
-  let en = "", ar = "";
-
-  for (const chunk of chunks) {
-    const enPart = await translateTextSmart(chunk, "fa", "en");
-    const arPart = await translateTextSmart(chunk, "fa", "ar");
-    en += enPart + " ";
-    ar += arPart + " ";
-    await new Promise(r => setTimeout(r, 1200)); // فاصله بین درخواست‌ها برای جلوگیری از 429
-  }
+  const en = await translateLongText(contentFa, "en");
+  const ar = await translateLongText(contentFa, "ar");
 
   return {
     fa: contentFa,
@@ -580,6 +596,7 @@ async function autoTranslateContent(contentFa) {
     ar: ar.trim() || contentFa
   };
 }
+
 
 
 
@@ -625,6 +642,7 @@ async function saveBlogWithTranslation(titleFa, bodyFa, category = "") {
 }
 
 
+// ✅ تابع جدید و تمیز برای افزودن بلاگ
 async function addBlog() {
   const faTitle = document.getElementById('blog-title')?.value?.trim() || '';
   const faBody = document.getElementById('blog-body-fa')?.value?.trim() || '';
@@ -635,41 +653,29 @@ async function addBlog() {
     return;
   }
 
-  // ترجمه‌ها (اگر توابع ترجمه موجود باشند)
-  let enTitle = faTitle, arTitle = faTitle;
-  let enBody = faBody, arBody = faBody;
-  if (typeof translateText === 'function') {
-    try {
-      enTitle = await translateText(faTitle, 'en');
-      arTitle = await translateText(faTitle, 'ar');
-      enBody = await translateLongText(faBody, 'en');
-      arBody = await translateLongText(faBody, 'ar');
-    } catch (e) {
-      console.warn('Translation failed, continuing with original text.', e);
-    }
-  }
+  // ترجمه خودکار سریع و کامل
+  const title = await autoTranslateContent(faTitle);
+  const body = await autoTranslateContent(faBody);
 
   const blog = {
-    title: { fa: faTitle, en: enTitle, ar: arTitle },
-    body: { fa: faBody, en: enBody, ar: arBody },
+    title,
+    body,
     category,
     date: new Date().toISOString()
   };
 
-  // save via bridge (remote if configured, else localStorage)
   try {
     await window.storageBridge.saveBlog(blog);
-    // پاک کردن فرم
-    const t = document.getElementById('blog-title'); if (t) t.value = '';
-    const b = document.getElementById('blog-body-fa'); if (b) b.value = '';
-    loadBlogsFromStorage(); // reload admin list
-    loadPublicBlogs(); // reload public view
+    document.getElementById('blog-title').value = '';
+    document.getElementById('blog-body-fa').value = '';
+    loadBlogsFromStorage();
+    loadPublicBlogs(true);
+    alert('✅ بلاگ با ترجمه کامل ذخیره شد.');
   } catch (e) {
     console.error('Failed to save blog:', e);
-    alert('خطا در ذخیره‌سازی مقاله.');
+    alert('❌ خطا در ذخیره‌سازی مقاله.');
   }
 }
-
 
 function loadPortfolio() {
   const saved = localStorage.getItem('portfolio');
@@ -789,7 +795,6 @@ async function translateTextSmart(text, source = "fa", target = "en") {
 
   return results.join(" ");
 }
-
 
 
 
@@ -1098,7 +1103,3 @@ function loadAbout() {
 
 </body>
 </html>
-
-
-
-
