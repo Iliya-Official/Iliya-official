@@ -765,32 +765,31 @@ function openPreview(path) {
 
 async function translateTextSmart(text, source = "fa", target = "en") {
   if (!text || typeof text !== "string") return "";
-  try {
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbzQP25LIwXN_fZnBwXkGxc5ww7gHOtPgz3A7hHfehgl9uZs8lrgcSPXNXcCOJSaj3AB/exec"; // ← لینک خودت
-    const params = new URLSearchParams({
-      text: text,
-      target: target,
-      key: "IliyaTranslate2025"
-    });
 
-    const res = await fetch(`${scriptUrl}?${params.toString()}`, {
-      method: "GET",
-    });
+  const endpoint = "https://script.google.com/macros/s/AKfycbzQP25LIwXN_fZnBwXkGxc5ww7gHOtPgz3A7hHfehgl9uZs8lrgcSPXNXcCOJSaj3AB/exec";
+  const key = "IliyaTranslate2025";
 
-    if (!res.ok) {
-      console.warn("Translate endpoint returned not ok:", res.status);
-      return text;
+  // خرد کردن متن بلند به جمله‌ها تا ترجمه ناقص نشود
+  const sentences = text.split(/(?<=[.!؟])\s+/);
+  const results = [];
+
+  for (const part of sentences) {
+    const url = `${endpoint}?text=${encodeURIComponent(part)}&target=${target}&key=${key}`;
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.translatedText) results.push(data.translatedText);
+      else results.push(part);
+      await new Promise(r => setTimeout(r, 800)); // تاخیر کوتاه بین ترجمه‌ها
+    } catch (err) {
+      console.error("Translation failed for part:", part, err);
+      results.push(part);
     }
-
-    const data = await res.json();
-    if (data.translatedText) return data.translatedText;
-    console.warn("Translation failed:", data.error || data);
-    return text;
-  } catch (err) {
-    console.error("🔥 Translation error:", err);
-    return text;
   }
+
+  return results.join(" ");
 }
+
 
 
 
@@ -1099,5 +1098,6 @@ function loadAbout() {
 
 </body>
 </html>
+
 
 
