@@ -780,7 +780,7 @@ async function translateTextSmart(text, source = "fa", target = "en") {
       const data = await res.json();
       if (data.translatedText) results.push(data.translatedText);
       else results.push(part);
-      await new Promise(r => setTimeout(r, 800)); // تاخیر کوتاه بین ترجمه‌ها
+      await new Promise(r => setTimeout(r, 1200)); // تاخیر کوتاه بین ترجمه‌ها
     } catch (err) {
       console.error("Translation failed for part:", part, err);
       results.push(part);
@@ -1098,6 +1098,7 @@ function loadAbout() {
 
 </body>
 </html>
+
 
 
 
