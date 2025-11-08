@@ -1,8 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Vazirmatn:wght@400;500;600&display=swap');
 html, body {
   margin: 0;
   padding: 0;
   width: 100vw;
-  height: 100%;
+  height: 100vh;
   font-family: 'Segoe UI', sans-serif;
   background: linear-gradient(to right, #ffffff, #fbfbfd);
   color: #000000;
@@ -10,6 +11,15 @@ html, body {
   touch-action: manipulation;
   display: flex;
   flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+body {
+  font-family: 'Poppins', 'Vazirmatn', sans-serif;
 }
 
 html[dir="rtl"] {
@@ -61,7 +71,10 @@ html[dir="ltr"] {
 #about {
   position: relative;
   overflow: hidden; 
-  min-height: 100vh;
+  min-height: calc(100vh - 80px); /* Subtracting header height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #about .about-bg-video {
@@ -76,7 +89,7 @@ html[dir="ltr"] {
   object-fit: cover;
   z-index: 0;
   background: black;
-  filter: brightness(0.6) blur(1px);
+  filter: brightness(0.6) blur(2px);
 }
 
 
@@ -91,6 +104,11 @@ html[dir="ltr"] {
   max-width: 800px;
   margin: 0 auto;
   line-height: 1.8;
+  min-height: 220px; /* Prevent jumping by reserving space */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 
@@ -181,9 +199,10 @@ html[dir="ltr"] {
 .container {
   display: flex;
   flex-direction: row;
-  /* width: 100%; */
-  height: 100%;
+  width: 100%;
+  height: calc(100vh - 80px); /* subtract header height */
   overflow: hidden;
+  position: relative;
 }
 
 .sidebar {
@@ -463,14 +482,144 @@ html[dir="ltr"] {
   gap: 1rem;
 }
 
+/* Admin Blog List Styles */
+.blog-items-list {
+  margin-top: 20px;
+}
+
+.blog-item {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.blog-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.blog-item-header h3 {
+  margin: 0;
+  color: #333;
+}
+
+.blog-item-category {
+  background: #eee;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #666;
+}
+
+.blog-item-content {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 6px;
+  margin: 10px 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.blog-item-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.blog-item-actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.edit-blog-btn {
+  background: #4CAF50;
+  color: white;
+}
+
+.delete-blog-btn {
+  background: #f44336;
+  color: white;
+}
+
+.blog-item-date {
+  font-size: 12px;
+  color: #666;
+  margin-top: 8px;
+  text-align: right;
+}
+
+/* Public Blog List Styles */
 .blog-list article {
   background-color: #fff;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   color: #000;
+  transition: transform 0.2s ease;
 }
+
+.blog-list article:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.blog-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.blog-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-size: 14px;
+}
+
+.read-more-btn {
+  background: #333;
+  color: #fff;
+}
+
+.edit-blog-btn {
+  background: #4CAF50;
+  color: #fff;
+}
+
+.delete-blog-btn {
+  background: #f44336;
+  color: #fff;
+}
+
+.blog-actions button:hover {
+  opacity: 0.9;
+}
+
+/* Inline full blog content (hidden by default) */
+.blog-full-content {
+  margin-top: 12px;
+  padding: 10px;
+  background: #fafafa;
+  border-radius: 6px;
+  line-height: 1.6;
+}
+.blog-full-content.hidden { display: none; }
+.blog-snippet { white-space: pre-wrap; }
 
 .blog-filter {
   margin-top: 1rem;
@@ -629,6 +778,175 @@ html[dir="ltr"] {
 
 .portfolio-manager button:hover {
   background: #005fa3;
+}
+
+
+
+/* Upload Files List Styles */
+.uploaded-files-list {
+  margin-top: 10px;
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.uploaded-file-item {
+  padding: 5px;
+  margin: 2px 0;
+  background: #f5f5f5;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.file-name {
+  font-size: 0.9em;
+  color: #333;
+}
+
+.file-size {
+  font-size: 0.8em;
+  color: #666;
+}
+
+.portfolio-files {
+  margin-top: 10px;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.file-list {
+  margin-top: 5px;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.file-item {
+  font-size: 0.85em;
+  padding: 3px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-buttons {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+.admin-buttons button {
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.admin-buttons .edit-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+}
+
+.admin-buttons .delete-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+}
+
+.admin-buttons button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Portfolio Admin Item Styles */
+.portfolio-admin-item {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  padding: 15px;
+}
+
+.portfolio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.portfolio-title {
+  margin: 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.portfolio-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.portfolio-actions button {
+  padding: 5px 12px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.portfolio-actions .edit-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.portfolio-actions .delete-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.portfolio-content {
+  display: flex;
+  gap: 20px;
+}
+
+.portfolio-image {
+  flex: 0 0 200px;
+}
+
+.portfolio-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.portfolio-details {
+  flex: 1;
+}
+
+.portfolio-link {
+  margin-bottom: 10px;
+}
+
+.portfolio-link a {
+  color: #2196F3;
+  text-decoration: none;
+}
+
+.portfolio-files {
+  background: #f5f5f5;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.portfolio-files h4 {
+  margin: 0 0 10px 0;
+  font-size: 1em;
+  color: #666;
 }
 
 /* نمایش قالب در iframe (اختیاری) */
@@ -792,6 +1110,11 @@ html[dir="ltr"] {
     gap: 10px;
     margin-top: 10px;
     text-align: center;
+  }
+
+  /* when toggled by hamburger */
+  .menu.show {
+    display: flex !important;
   }
 
 
@@ -1120,12 +1443,20 @@ html[dir="ltr"] {
 
 @media (max-height: 500px) and (orientation: landscape) {
   #about {
-    min-height: auto;      /* اجازه بده ارتفاع با محتوا تنظیم بشه */
+    min-height: calc(100vh - 130px);
+    overflow: auto;
   }
   #about .about-content {
-    font-size: 0.9rem;     /* متن کوچیک‌تر تا جا بشه */
-    padding: 10px 10px 100px;
+    font-size: 0.9rem;
+    padding: 20px;
     overflow-y: auto;
+  }
+  #about .about-bg-video {
+    position: absolute;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
   }
 
    .container {
@@ -1142,10 +1473,470 @@ html[dir="ltr"] {
   }
 }
 
+/* ✅ بهبود ظاهر تب بلاگ */
+#blog-tab {
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+#blog-tab input,
+#blog-tab select,
+#blog-tab textarea {
+  width: 100%;
+  max-width: 900px;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  color: #000;
+}
+
+#blog-tab textarea {
+  height: 250px; /* ارتفاع بزرگ‌تر برای راحتی تایپ */
+  resize: vertical;
+  line-height: 1.6;
+}
+
+#blog-tab button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+#blog-tab button:hover {
+  background: #555;
+}
+
+/* ✅ Editor Toolbar Styles */
+.editor-container {
+  margin: 10px 0;
+  max-width: 900px;
+}
+
+.editor-toolbar {
+  background: #e8e8e8;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px 6px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.editor-toolbar button {
+  background: #fff;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.editor-toolbar button:hover {
+  background: #333;
+  color: #fff;
+}
+
+.editor-area {
+  min-height: 250px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-top: none;
+  padding: 10px;
+  border-radius: 0 0 6px 6px;
+  font-size: 1rem;
+  color: #000;
+  line-height: 1.6;
+  overflow-y: auto;
+}
+
+/* ==== Portfolio Form Styles ==== */
+.portfolio-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 700px;
+}
+
+.portfolio-inputs label,
+.portfolio-upload label {
+  font-weight: bold;
+  color: #222;
+  margin-top: 5px;
+}
+
+.portfolio-upload input[type="file"] {
+  margin-top: 4px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.portfolio-preview {
+  display: block;
+  margin-top: 10px;
+  max-width: 250px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.portfolio-list {
+  margin-top: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+.portfolio-admin-item {
+  background: #fafafa;
+  border: 1px solid #ddd;
+  padding: 8px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.portfolio-admin-item img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.portfolio-admin-info button {
+  background: #eee;
+  border: none;
+  padding: 5px 10px;
+  margin: 3px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.portfolio-admin-info button:hover {
+  background: #dcdcdc;
+}
+
+/* ==== About Me Editor ==== */
+.about-editor {
+  max-width: 700px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: #f4f4f4;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.editor-toolbar button {
+  border: none;
+  background: #fff;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+.editor-toolbar button:hover {
+  background: #ddd;
+}
+
+.editable-area {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-height: 250px;
+  padding: 10px;
+  background: #fff;
+  overflow-y: auto;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.editable-area:empty:before {
+  content: attr(placeholder);
+  color: #aaa;
+}
+.save-about-btn {
+  margin-top: 12px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #222;
+  color: white;
+  cursor: pointer;
+}
+.save-about-btn:hover {
+  background: #444;
+}
+
+/* === Saved About List Styles === */
+.saved-about-list {
+  margin-top: 20px;
+  border-top: 1px solid #ccc;
+  padding-top: 20px;
+}
+
+.saved-about-list h3 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.about-item {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.about-item-content {
+  max-height: 100px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 4px;
+}
+
+.about-item-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.about-item-actions button {
+  padding: 5px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.edit-about-btn {
+  background: #4CAF50;
+  color: white;
+}
+
+.delete-about-btn {
+  background: #f44336;
+  color: white;
+}
+
+.about-item-actions button:hover {
+  opacity: 0.9;
+}
+
+.about-item-date {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 12px;
+  color: #666;
+}
+
+/* ==== CONTACT TAB (ADMIN) ==== */
+#contact-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 600px;
+}
+
+.contact-admin-form label {
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.contact-admin-form input {
+  width: 100%;
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.contact-admin-form input:focus {
+  border-color: #0078d4;
+}
+
+#save-contact-btn {
+  background: #0078d4;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  margin-top: 10px;
+  align-self: flex-start;
+  transition: background 0.2s;
+}
+
+#save-contact-btn:hover {
+  background: #005fa3;
+}
+
+/* ==== SETTINGS TAB ==== */
+#settings-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 600px;
+}
+
+.settings-form label {
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.settings-form input {
+  width: 100%;
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.settings-form input:focus {
+  border-color: #0078d4;
+}
+
+#update-credentials-btn {
+  background: #0078d4;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  margin-top: 10px;
+  align-self: flex-start;
+  transition: background 0.2s;
+}
+
+#update-credentials-btn:hover {
+  background: #005fa3;
+}
+
+
 /* ✅ اطمینان از نمایش پنل ادمین پس از لاگین */
 #admin-panel:not(.hidden) {
   display: block !important;
 }
+
+/* ==== Portfolio Section - modern slider style ==== */
+
+.portfolio-gallery {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 75vh;
+  overflow: hidden;
+  background: linear-gradient(180deg, #fafafa 0%, #eaeaea 100%);
+  border-radius: 20px;
+  box-shadow: 0 4px 25px rgba(0,0,0,0.15);
+  transition: all 0.4s ease;
+}
+
+.portfolio-gallery .gallery-wrapper {
+  position: relative;
+  width: 90%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gallery-track {
+  display: flex;
+  transition: transform 0.6s ease-in-out;
+  height: 100%;
+  width: 100%;
+}
+
+.gallery-track a {
+  flex: 0 0 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gallery-track img {
+  width: 85%;
+  max-height: 70vh;
+  object-fit: cover;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.gallery-track img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+}
+
+.nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.4);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  padding: 0.6em 0.8em;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.3s;
+  z-index: 10;
+}
+
+.nav-btn:hover {
+  background: rgba(0,0,0,0.6);
+}
+
+.nav-btn.left {
+  left: 10px;
+}
+
+.nav-btn.right {
+  right: 10px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .portfolio-gallery {
+    height: 60vh;
+  }
+  .gallery-track img {
+    width: 95%;
+    max-height: 50vh;
+  }
+  .nav-btn {
+    font-size: 1.5rem;
+    padding: 0.5em 0.6em;
+  }
+}
+
 
 
 
