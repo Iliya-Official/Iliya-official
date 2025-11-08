@@ -15,9 +15,9 @@
         <img src="assets/logo/mylogo3.png" loading="lazy" alt="Logo" class="logo-icon" />
         <h1 style="color: black;">Iliya Rad</h1>
       </div>
-  <div class="language-switcher">
+  <!-- <div class="language-switcher">
   <button class="language-btn" onclick="toggleLanguageMenu()">
-    <i class="fas fa-globe"></i> <!-- 👈 آیکون کره زمین برگشت -->
+    <i class="fas fa-globe"></i> 
   </button>
   <ul id="language-menu" class="language-menu">
     <li onclick="setLanguage('en')">
@@ -30,7 +30,7 @@
       <img src="https://flagcdn.com/w20/sa.png" alt="AR" class="flag-icon" /> AR
     </li>
   </ul>
-</div>
+</div> -->
     </div>
   </header>
 
@@ -63,11 +63,7 @@
   </video>
   <!-- محتوای متن -->
   <div class="about-content">
-    <p id="about-fa">
-      من ایلیا راد هستم، توسعه‌دهنده‌ی فرانت‌اند با علاقه‌مندی ویژه به ساخت رابط‌های کاربری روان، زیبا و سازگار با تمام دستگاه‌ها. تمرکزم روی طراحی چندزبانه و تجربه‌ی کاربری بی‌نقص است تا هر کاربر، صرف‌نظر از زبان یا دستگاه، تجربه‌ای یکسان و حرفه‌ای داشته باشد
-    </p>
-    <p id="about-en" class="hidden"></p>
-    <p id="about-ar" class="hidden"></p>
+    <p id="about-en"></p>
   </div>
 </section>
       <section id="blog" class="public-section hidden" data-i18n="blogContent"></section>
@@ -79,9 +75,9 @@
   <div class="gallery-wrapper">
     <button class="nav-btn left" onclick="scrollGallery(-1)">&#8592;</button>
     <div class="gallery-track">
-      <a href="assets/samples/sampel1/link/startbootstrap-creative-gh-pages/index.html" target="_blank"><img src="assets/samples/sampel1/img/Screenshot -ghoghnoos.png" alt="Site 1" /></a>
-      <a href="https://example2.com" target="_blank"><img src="assets/samples/site2.png" alt="Site 2" /></a>
-      <a href="https://example3.com" target="_blank"><img src="assets/samples/site3.png" alt="Site 3" /></a>
+      <!-- <a href="assets/samples/sampel1/link/startbootstrap-creative-gh-pages/index.html" target="_blank"><img src="assets/samples/sampel1/img/Screenshot -ghoghnoos.png" alt="Site 1" /></a> -->
+      <!-- <a href="https://example2.com" target="_blank"><img src="assets/samples/site2.png" alt="Site 2" /></a>
+      <a href="https://example3.com" target="_blank"><img src="assets/samples/site3.png" alt="Site 3" /></a> -->
       
     </div>
     <button class="nav-btn right" onclick="scrollGallery(1)">&#8594;</button>
@@ -114,7 +110,7 @@
     <input type="password" id="adminPass" placeholder="Password" autocomplete="new-password" />
     <button type="submit">🔐 Login</button>
   </form>
-  <button id="admin-logout-btn" onclick="logoutAdmin()" class="hidden">🚪 Logout</button>
+  <button id="admin-logout-btn" onclick="performLogout()" class="hidden">🚪 Logout</button>
 </div>
 
 <section id="admin-panel" class="content-section hidden">
@@ -129,11 +125,32 @@
     <!-- <button id="admin-logout-btn" onclick="logoutAdmin()">🔌 خروج</button> -->
   </div>
 
-  <div id="about-tab" class="admin-tab hidden">
-  <h3>✏️ ویرایش متن درباره من</h3>
-  <textarea id="about-fa-edit" placeholder="متن فارسی درباره من" rows="5"></textarea>
-  <button onclick="saveAbout(document.getElementById('about-fa-edit').value)">💾 ذخیره</button>
+ <div id="about-tab" class="admin-tab hidden">
+  <h3>✏️ Edit “About Me” Section</h3>
+
+  <div class="about-editor">
+    <div class="editor-toolbar">
+      <button type="button" onclick="formatText('bold')" title="Bold"><b>B</b></button>
+      <button type="button" onclick="formatText('italic')" title="Italic"><i>I</i></button>
+      <button type="button" onclick="formatText('underline')" title="Underline"><u>U</u></button>
+      <button type="button" onclick="formatText('insertUnorderedList')" title="Bullet List">• List</button>
+      <button type="button" onclick="addLink()" title="Insert Link">🔗</button>
+      <button type="button" onclick="formatText('justifyLeft')" title="Align Left">⬅</button>
+      <button type="button" onclick="formatText('justifyCenter')" title="Align Center">↔</button>
+      <button type="button" onclick="formatText('justifyRight')" title="Align Right">➡</button>
+    </div>
+
+    <div id="about-editor" class="editable-area" contenteditable="true" placeholder="Write about yourself here..."></div>
+    <button class="save-about-btn" onclick="saveAboutFromEditor()">💾 Save About</button>
+
+    <!-- لیست متن‌های ذخیره شده -->
+    <div class="saved-about-list">
+      <h3>Saved About Texts</h3>
+      <div id="about-items-list"></div>
+    </div>
+  </div>
 </div>
+
 
 
   <div id="blog-tab" class="admin-tab hidden">
@@ -144,40 +161,92 @@
       <option value="tech">Tech</option>
       <option value="design">Design</option>
     </select>
-    <textarea id="blog-body-fa" placeholder="Blog Content"></textarea>
-    <button onclick="addBlog()">Add Blog</button>
-    <div class="blog-filter">
-      <button onclick="filterBlogs('all')">All</button>
-      <button onclick="filterBlogs('tech')">Tech</button>
-      <button onclick="filterBlogs('design')">Design</button>
-      <button onclick="filterBlogs('general')">General</button>
+
+    <div class="editor-container">
+      <div class="editor-toolbar">
+        <button type="button" onclick="execCmd('bold')"><b>B</b></button>
+        <button type="button" onclick="execCmd('italic')"><i>I</i></button>
+        <button type="button" onclick="execCmd('underline')"><u>U</u></button>
+        <button type="button" onclick="execCmd('insertUnorderedList')">• List</button>
+        <button type="button" onclick="execCmd('insertOrderedList')">1. List</button>
+        <button type="button" onclick="execCmd('createLink', prompt('Enter URL:'))">🔗 Link</button>
+        <button type="button" onclick="execCmd('removeFormat')">🧹 Clear</button>
+      </div>
+      <div id="blog-body-editor" class="editor-area" contenteditable="true"></div>
     </div>
-    <div id="blog-list" class="blog-list"></div>
+    <button id="blog-add-btn" onclick="addBlog()">Add Blog</button>
+
+    <!-- Saved Blog Posts List -->
+    <div class="saved-blog-list">
+      <h3>Saved Blog Posts</h3>
+      <div id="blog-items-list" class="blog-items-list"></div>
+    </div>
   </div>
 
-  <div id="portfolio-tab" class="admin-tab hidden">
-    <h2>🎨 Add Portfolio Item</h2>
+<div id="portfolio-tab" class="admin-tab hidden">
+  <h2>🎨 Manage Portfolio</h2>
+
+  <div class="portfolio-form">
     <input type="text" id="portfolio-title" placeholder="Project Title" />
-    <input type="text" id="portfolio-link" placeholder="Local path (e.g. templates/shop/index.html)" />
-    <input type="url" id="portfolio-image" placeholder="Image URL" />
-    <button onclick="addPortfolio()">Add Portfolio</button>
-    <div id="portfolio-list" class="portfolio-list"></div>
+
+    <div class="portfolio-inputs">
+      <label>🔗 Project Link (optional):</label>
+      <input type="url" id="portfolio-link" placeholder="https://github.com/username/project" />
+    </div>
+
+    <div class="portfolio-upload">
+      <label>🖼️ Upload Image Preview:</label>
+      <input type="file" id="portfolio-image-file" accept="image/*" onchange="previewPortfolioImage(event)" />
+      <img id="portfolio-preview" src="" alt="Preview" class="portfolio-preview hidden" />
+      <input type="url" id="portfolio-image" placeholder="Or Image URL (optional)" />
+    </div>
+
+    <div class="portfolio-files-upload">
+      <label>📁 Upload Project Files:</label>
+      <input type="file" id="portfolio-files" multiple onchange="handleProjectFiles(event)" />
+      <div id="uploaded-files-list" class="uploaded-files-list"></div>
+    </div>
+
+    <button id="portfolio-save-btn" onclick="addPortfolio()">💾 Save Portfolio</button>
   </div>
+
+  <hr />
+  <h3>📁 Your Portfolio Items</h3>
+  <div id="portfolio-list" class="portfolio-list"></div>
+</div>
 
   <div id="contact-tab" class="admin-tab hidden">
-    <h3>📞 تنظیمات تماس</h3>
-    <input type="text" id="admin-phone" placeholder="شماره تلفن" />
-    <input type="email" id="admin-email" placeholder="ایمیل" />
-    <input type="text" id="admin-social" placeholder="لینک شبکه اجتماعی" />
-    <button onclick="saveContactInfo()">ثبت اطلاعات تماس</button>
-  </div>
+  <h3>📞 Contact Information</h3>
 
-  <div id="settings-tab" class="admin-tab hidden">
-    <h3>🔐 تغییر رمز عبور</h3>
-    <input type="text" id="new-username" placeholder="نام کاربری جدید" />
-    <input type="password" id="new-password" placeholder="رمز عبور جدید" />
-    <button onclick="updateAdminCredentials()">ثبت تغییرات</button>
+  <div class="contact-admin-form">
+    <label>📱 Phone Number:</label>
+    <input type="text" id="admin-phone" placeholder="Enter your phone number" />
+
+    <label>📧 Email Address:</label>
+    <input type="email" id="admin-email" placeholder="Enter your email address" />
+
+    <label>🔗 Social Media / Website:</label>
+    <input type="text" id="admin-social" placeholder="e.g. https://linkedin.com/in/yourname" />
+
+    <button id="save-contact-btn" onclick="saveContactInfo()">💾 Save Contact Info</button>
   </div>
+</div>
+
+
+ <div id="settings-tab" class="admin-tab hidden">
+  <h3>🔐 Change Admin Credentials</h3>
+
+  <div class="settings-form">
+    <label>👤 New Username (Email):</label>
+    <input type="text" id="new-username" placeholder="Enter new admin email" />
+
+    <label>🔑 New Password:</label>
+    <input type="password" id="new-password" placeholder="Enter new password" />
+
+    <button id="update-credentials-btn" onclick="updateAdminCredentials()">💾 Save Changes</button>
+  </div>
+</div>
+
 </section>
 
  </div>
@@ -192,914 +261,1365 @@
   </div>
  
 
-  <script>
- window.addEventListener('DOMContentLoaded', () => {
-  document.querySelector(".menu").style.display = "";
-  document.querySelector(".main-content").scrollTop = 0;
-  
-translateAboutSection().then(() => {
-    showAboutByLang('en');
-  });
-
-
-  // بستن منوی زبان در شروع
-  document.getElementById('language-menu')?.classList.remove('show');
-
-  // تنظیم زبان ذخیره‌شده
-  const lang = localStorage.getItem('selectedLanguage') || 'en';
-  setLanguage(lang); 
-  // loadBlogsFromStorage();
-
-  // بارگذاری نمونه‌کارها
-  loadPortfolio();
-  loadPortfolioAdmin();
-
-  // اتصال فرم لاگین
-  const loginForm = document.getElementById('admin-form');
-  if (loginForm) {
-    loginForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      loginAdmin();
-      showSection('admin-panel');
+<script>
+/* In-page notifier: showNotification(message, type:'info'|'success'|'error'|'warning', timeoutMs)
+   Minimal, self-contained so we avoid alert() popups and have consistent UX. */
+function showNotification(message, type = 'info', timeout = 3000) {
+  try {
+    const el = document.createElement('div');
+    el.className = 'site-notify site-notify-' + type;
+    el.textContent = message;
+    Object.assign(el.style, {
+      position: 'fixed',
+      right: '20px',
+      top: '20px',
+      padding: '10px 14px',
+      background: type === 'error' ? '#f44336' : (type === 'success' ? '#4CAF50' : (type === 'warning' ? '#ff9800' : '#333')),
+      color: '#fff',
+      borderRadius: '6px',
+      boxShadow: '0 6px 18px rgba(0,0,0,0.12)',
+      zIndex: 99999,
+      opacity: '1',
+      transition: 'opacity 0.3s ease'
     });
-
-  window.addEventListener('load', () => {
-  loadBlogsFromStorage();
-  loadPublicBlogs(true);
-  });
-  }
-
-  // نمایش بخش اولیه
-  showSection('about');
-  //فرم تغییر شماره تماس و ایمیل پنل ادمین
-  const savedContact = localStorage.getItem('contactInfo');
-if (savedContact) {
-  const { phone, email, social } = JSON.parse(savedContact);
-  document.getElementById('admin-phone').value = phone || '';
-  document.getElementById('admin-email').value = email || '';
-  document.getElementById('admin-social').value = social || '';
+    document.body.appendChild(el);
+    setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, timeout);
+    return el;
+  } catch (e) { console.warn('notify failed', e); }
 }
 
-});
-
-window.addEventListener("orientationchange", () => {
-  const menu = document.querySelector(".menu");
-  const main = document.querySelector(".main-content");
-  if (menu) {
-    menu.style.display = "";
-    menu.classList.remove("open");
+/* Modal for showing full blog posts when 'Continue reading' is clicked */
+function showBlogModal(title, html) {
+  let modal = document.getElementById('blog-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'blog-modal';
+    Object.assign(modal.style, {
+      position: 'fixed', left: 0, top: 0, right: 0, bottom: 0,
+      background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99998
+    });
+    const box = document.createElement('div');
+    box.id = 'blog-modal-box';
+    Object.assign(box.style, { background: '#fff', color: '#000', padding: '20px', borderRadius: '8px', maxWidth: '900px', maxHeight: '80vh', overflowY: 'auto' });
+    const close = document.createElement('button');
+    close.textContent = 'Close';
+    Object.assign(close.style, { float: 'right', marginBottom: '10px' });
+    close.onclick = () => modal.remove();
+    box.appendChild(close);
+    const h = document.createElement('h2'); h.id = 'blog-modal-title'; box.appendChild(h);
+    const c = document.createElement('div'); c.id = 'blog-modal-content'; box.appendChild(c);
+    modal.appendChild(box);
+    document.body.appendChild(modal);
   }
-  if (main) {
-    main.scrollTop = 0;
+  document.getElementById('blog-modal-title').textContent = title || '';
+  document.getElementById('blog-modal-content').innerHTML = html || '';
+  modal.style.display = 'flex';
+}
+
+/* --- Robust typing effect: types HTML safely (preserves tags, no duplication) --- */
+function typeText(element, html, speed = 28) {
+  if (!element || typeof html !== 'string') return;
+
+  // جلوگیری از اجرای همزمان دو تایپ متداخل
+  if (window._aboutTyping) {
+    // اگر در حال تایپ است، آن را لغو کن و دوباره اجرا کن
+    clearInterval(window._aboutTypingInterval);
+    window._aboutTyping = false;
   }
-});
+  window._aboutTyping = true;
 
-    const translations = {
-  en: {
-    about: "About Me",
-    blog: "Blog",
-    portfolio: "Portfolio",
-    contact: "Contact",
-    send: "Send",
-    phone: 'Phone: <a href="tel:+96879696086">+96879696086</a>',
-    email: 'Email: <a href="mailto:alirezamotieerad@gmail.com">alirezamotieerad@gmail.com</a>'
+  // خالی کردن محتوای فعلی به‌صورت امن
+  element.innerHTML = '';
 
-  },
-  fa: {
-    about: "درباره من",
-    blog: "بلاگ",
-    portfolio: "نمونه‌کارها",
-    contact: "ارتباط با من",
-    send: "ارسال",
-    phone: 'تلفن: <a href="tel:+96879696086">+96879696086</a>',
-    email: 'ایمیل: <a href="mailto:alirezamotieerad@gmail.com">alirezamotieerad@gmail.com</a>'
+  // تبدیل HTML به یک DOM موقت برای پیمایش بدون درج مستقیم innerHTML
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
 
-  },
-  ar: {
-    about: "من أنا",
-    blog: "المدونة",
-    portfolio: "الأعمال",
-    contact: "اتصل بي",
-    send: "إرسال",
-    phone: 'الهاتف: <a href="tel:+96879696086">+96879696086</a>',
-    email: 'البريد الإلكتروني: <a href="mailto:alirezamotieerad@gmail.com">alirezamotieerad@gmail.com</a>'
+  // صف از گره‌هایی که باید پردازش شوند (node, parentInTarget)
+  const work = [];
+  // هر گره فرزند temp را با parent هدف (element) شروع کن
+  Array.from(temp.childNodes).forEach(n => work.push({ node: n, parent: element }));
+
+  // تابعی که یک کاراکتر را اضافه می‌کند (برای متن)
+  function appendChar(parent, ch) {
+    // اگر آخرین فرزند یک text node هست، به آن اضافه کن برای کارایی بهتر
+    const last = parent.lastChild;
+    if (last && last.nodeType === Node.TEXT_NODE) {
+      last.textContent += ch;
+    } else {
+      parent.appendChild(document.createTextNode(ch));
+    }
   }
-};
 
-function applyTranslations(lang) {
-  const htmlKeys = ['phone', 'email']; 
+  // پیمایش ترتیبی: هر تیک یک کاراکتر یا یک گره را پردازش می‌کند
+  window._aboutTypingInterval = setInterval(() => {
+    if (work.length === 0) {
+      clearInterval(window._aboutTypingInterval);
+      window._aboutTyping = false;
+      return;
+    }
 
-  document.querySelectorAll("[data-i18n]").forEach(el => {
-    const key = el.getAttribute("data-i18n");
-    const value = translations[lang]?.[key];
+    const top = work[0];
 
-    if (value) {
-      if (htmlKeys.includes(key)) {
-        el.innerHTML = value;
+    // اگر node یک متن است => کاراکتر به کاراکتر آن را به parent اضافه کن
+    if (top.node.nodeType === Node.TEXT_NODE) {
+      const txt = top.node.textContent || '';
+      if (!top._pos) top._pos = 0;
+      if (top._pos < txt.length) {
+        appendChar(top.parent, txt.charAt(top._pos));
+        top._pos++;
+        return; // یک کاراکتر اضافه شد، در این تیک بمان
       } else {
-        el.textContent = value;
+        // متن تمام شد => این کار کامل شده، آن را از صف بردار
+        work.shift();
+        return;
       }
     }
-  });
-}
-    function toggleAdminLogin() {
-  const loginBox = document.getElementById('admin-login');
-  if (loginBox) {
-    loginBox.classList.toggle('hidden');
-  }
-}
-  let adminUsername = 'admin';
-  let adminPassword = 'admin777';
 
-function loginAdmin() {
-  const username = document.getElementById('adminUser').value.trim();
-  const password = document.getElementById('adminPass').value.trim();
+    // اگر node یک المنت است => یک clone خالی بساز، اضافه کن، سپس فرزندانش را به صف اضافه کن
+    if (top.node.nodeType === Node.ELEMENT_NODE) {
+      const el = document.createElement(top.node.nodeName.toLowerCase());
+      // کپی اتریبیوت‌ها
+      Array.from(top.node.attributes || []).forEach(attr => el.setAttribute(attr.name, attr.value));
+      top.parent.appendChild(el);
 
-  const savedUser = localStorage.getItem('adminUser') || 'admin';
-  const savedPass = localStorage.getItem('adminPass') || 'admin777';
-
-  if (username === savedUser && password === savedPass) {
-    alert('✅ خوش آمدید!');
-
-    // پنهان کردن فرم لاگین
-    const loginBox = document.getElementById('admin-login');
-    if (loginBox) loginBox.classList.add('hidden');
-
-        // نمایش کامل پنل ادمین
-    const adminPanel = document.getElementById('admin-panel');
-    if (adminPanel) {
-      adminPanel.classList.remove('hidden');
-      adminPanel.style.display = 'block'; // ✅ نمایش اجباری چون .content-section خودش display:none دارد
+      // حذف گره فعلی و قرار دادن فرزندان آن در ابتدای صف (تا ترتیب حفظ شود)
+      work.shift();
+      // اضافه کن فرزندان به ابتدای صف به صورت وارونه تا ترتیب نهایی درست باشد
+      const children = Array.from(top.node.childNodes);
+      for (let i = children.length - 1; i >= 0; i--) {
+        work.unshift({ node: children[i], parent: el });
+      }
+      return;
     }
 
-        // نمایش دکمه خروج (هر کدام که وجود دارد)
-    const logoutBtns = document.querySelectorAll('#admin-logout-btn');
-    logoutBtns.forEach(btn => btn.classList.remove('hidden'));
-    
-   // document.getElementById('admin-login').classList.add('hidden');
-    // document.getElementById('admin-panel').classList.remove('hidden');
-    // document.getElementById('admin-logout-btn').classList.remove('hidden');
-
-    // فعال کردن تب پیش‌فرض
-    showAdminTab('about-tab');
-
-    // بارگذاری داده‌ها
-  //  loadBlogAdmin?.();
-  //  loadPortfolioAdmin?.();
-  } else {
-    alert('❌ اطلاعات ورود اشتباه است.');
-  }
+    // سایر نوع‌های نود (تعریف شده نادر) را پاک کن
+    work.shift();
+  }, speed);
 }
 
-// function logoutAdmin() {
-//   document.getElementById('admin-login').classList.remove('hidden');
-//   document.getElementById('admin-panel').classList.add('hidden');
-//   document.getElementById('admin-logout-btn').classList.add('hidden');
-//   document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
-//   showSection('about');
-// }
+ 
 
-function logoutAdmin() {
-  const loginBox = document.getElementById('admin-login');
-  const adminPanel = document.getElementById('admin-panel');
-  const logoutBtns = document.querySelectorAll('#admin-logout-btn');
-
-  if (loginBox) loginBox.classList.remove('hidden');
-  if (adminPanel) {
-    adminPanel.classList.add('hidden');
-    adminPanel.style.display = 'none';
-  }
-  logoutBtns.forEach(btn => btn.classList.add('hidden'));
-
-  document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
-  showSection('about');
-}
-
-function updateAdminCredentials() {
-  const newUser = document.getElementById('new-username').value.trim();
-  const newPass = document.getElementById('new-password').value.trim();
-  if (!newUser || !newPass) return alert('Please fill in both fields.');
-  adminUsername = newUser;
-  adminPassword = newPass;
-  alert('✅ Admin credentials updated!');
-  document.getElementById('new-username').value = '';
-  document.getElementById('new-password').value = '';
-}
-
-function showAdminTab(id) {
-  document.querySelectorAll('.admin-tab').forEach(tab => {
-    tab.classList.remove('active');
-  });
-  const target = document.getElementById(id);
-  if (target) {
-    target.classList.add('active');
-  }
-}
-
-function saveContactInfo() {
-  const phone = document.getElementById('admin-phone').value.trim();
-  const email = document.getElementById('admin-email').value.trim();
-  const social = document.getElementById('admin-social').value.trim();
-
-  if (!phone || !email) {
-    alert('❌ لطفاً شماره و ایمیل را وارد کنید.');
-    return;
-  }
-
-  const contactInfo = { phone, email, social };
-  localStorage.setItem('contactInfo', JSON.stringify(contactInfo));
-  alert('✅ اطلاعات تماس با موفقیت ذخیره شد!');
-}
-
-
+/* show public section */
 function showSection(id) {
-  document.querySelectorAll('.public-section').forEach(sec => {
-    sec.classList.add('hidden');
-    sec.style.display = 'none';
+  document.querySelectorAll('.public-section').forEach(sec => { 
+    sec.classList.add('hidden'); 
+    sec.style.display = 'none'; 
   });
+  
   const target = document.getElementById(id);
   if (target) {
     target.classList.remove('hidden');
     target.style.display = 'flex';
     target.scrollTop = 0;
-  }
-}
-
-function saveBlogsToStorage() {
-  const blogList = document.getElementById('blog-list');
-  const blogs = Array.from(blogList.children).map(article => ({
-    title: article.querySelector('h3').textContent,
-    body: article.querySelector('p').textContent,
-    category: article.getAttribute('data-category')
-  }));
-  localStorage.setItem('blogs', JSON.stringify(blogs));
-}
-
-async function loadBlogsFromStorage() {
-  // این تابع برای پنل ادمین استفاده می‌شود (نمایش لیست بلاگ‌ها)
-  const blogList = document.getElementById('blog-list');
-  if (!blogList) return;
-  blogList.innerHTML = '';
-
-  // گرفتن داده‌ها از Firebase یا localStorage از طریق bridge
-  const blogs = await window.storageBridge.loadBlogs?.() || [];
-  if (!Array.isArray(blogs) || blogs.length === 0) return;
-
-  // ساخت هر بلاگ
-  blogs.forEach((entry, index) => {
-    if (!entry) return;
-
-    const category = entry.category || '';
-    let title = '', body = '';
-
-    // بررسی ساختار ترجمه‌ای (fa, en, ar)
-    if (typeof entry.title === 'object') {
-      title = entry.title.fa || entry.title.en || entry.title.ar || 'بدون عنوان';
-    } else {
-      title = entry.title || 'بدون عنوان';
+    
+    // Load blogs when showing the public blog section
+    if (id === 'public-blog') {
+      loadPublicBlogs();
     }
-
-    if (typeof entry.body === 'object') {
-      body = entry.body.fa || entry.body.en || entry.body.ar || '';
-    } else {
-      body = entry.body || '';
-    }
-
-    // ایجاد عنصر مقاله در پنل ادمین
-    const article = document.createElement('article');
-    article.setAttribute('data-category', category);
-
-    const idAttr = entry.id ? `data-id="${entry.id}"` : `data-index="${index}"`;
-
-    article.innerHTML = `
-      <h3>${String(title)}</h3>
-      <p>${String(body)}</p>
-      <div style="display:flex;gap:8px;">
-        <button class="delete-blog-btn" ${idAttr}>🗑️ حذف</button>
-      </div>
-    `;
-
-    blogList.appendChild(article);
-
-    // اتصال دکمه حذف
-    const delBtn = article.querySelector('.delete-blog-btn');
-    if (delBtn) {
-      delBtn.addEventListener('click', async () => {
-        const remoteId = delBtn.getAttribute('data-id');
-        const idx = parseInt(delBtn.getAttribute('data-index'));
-        await window.storageBridge.deleteBlog(remoteId, idx);
-        loadBlogsFromStorage();  // بازخوانی لیست
-        loadPublicBlogs();       // به‌روزرسانی نمایش عمومی
-      });
-    }
-  });
-}
-
-let blogsLoadedOnce = false; // 🟢 متغیر کنترلی برای جلوگیری از دوباره لود شدن
-
-async function loadPublicBlogs(forceReload = false) {
-  const blogList = document.getElementById('public-blog-list');
-  if (!blogList) return;
-
-  // اگر قبلاً لود شده و دوباره فراخوانی شده، جلوگیری کن
-  if (blogsLoadedOnce && !forceReload) return;
-
-  // پاک کردن لیست قبلی برای اطمینان از حذف تکرارها
-  blogList.innerHTML = '';
-
-  const blogs = await window.storageBridge.loadBlogs?.() || [];
-  if (!Array.isArray(blogs) || blogs.length === 0) return;
-
-  const lang = document.documentElement.lang || 'en';
-
-  blogs.forEach(blog => {
-    if (!blog) return;
-
-    let safeTitle = 'بدون عنوان';
-    let safeBody = '';
-
-    // ✅ انتخاب ترجمه مناسب
-    if (typeof blog.title === 'object') {
-      safeTitle = blog.title[lang] || blog.title.fa || blog.title.en || blog.title.ar || safeTitle;
-    } else if (typeof blog.title === 'string') {
-      safeTitle = blog.title;
-    }
-
-    if (typeof blog.body === 'object') {
-      safeBody = blog.body[lang] || blog.body.fa || blog.body.en || blog.body.ar || '';
-    } else if (typeof blog.body === 'string') {
-      safeBody = blog.body;
-    }
-
-    // ✅ ساخت بلاگ
-    const article = document.createElement('article');
-    article.setAttribute('data-category', blog.category || '');
-    article.innerHTML = `
-      <h3>${String(safeTitle)}</h3>
-      <p>${String(safeBody)}</p>
-    `;
-
-    blogList.appendChild(article);
-  });
-
-  // علامت‌گذاری که فقط یکبار لود شده
-  blogsLoadedOnce = true;
-}
-
-
-function filterBlogs(cat) {
-  document.querySelectorAll('#blog-list article').forEach(article => {
-    article.style.display = article.getAttribute('data-category') === cat || cat === 'all' ? 'block' : 'none';
-  });
-  loadBlogsFromStorage();
-}
-
-
-// ✅ ترجمه سریع و پایدار متن‌های بلند با Google Script
-async function translateLongText(text, targetLang) {
-  if (!text || typeof text !== "string") return "";
-
-  const endpoint = "https://script.google.com/macros/s/AKfycbzQP25LIwXN_fZnBwXkGxc5ww7gHOtPgz3A7hHfehgl9uZs8lrgcSPXNXcCOJSaj3AB/exec";
-  const key = "IliyaTranslate2025";
-
-  // تقسیم متن به بخش‌های 350 کاراکتری
-  const chunks = text.match(/.{1,350}/g) || [];
-  const results = [];
-
-  for (const chunk of chunks) {
-    const url = `${endpoint}?text=${encodeURIComponent(chunk)}&target=${targetLang}&key=${key}`;
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      results.push(data.translatedText || chunk);
-      await new Promise(r => setTimeout(r, 300)); // تاخیر خیلی کوتاه
-    } catch (err) {
-      console.error("⚠️ Translate failed for chunk:", err);
-      results.push(chunk);
+    // Load about when showing about section
+    if (id === 'about') {
+      loadAbout();
     }
   }
-
-  return results.join(" ");
 }
+window.showSection = showSection;
 
-// ✅ ترجمه خودکار محتوا (بلاگ یا درباره من)
-async function autoTranslateContent(contentFa) {
-  if (!contentFa || typeof contentFa !== "string") 
-    return { fa: "", en: "", ar: "" };
-
-  const en = await translateLongText(contentFa, "en");
-  const ar = await translateLongText(contentFa, "ar");
-
-  return {
-    fa: contentFa,
-    en: en.trim() || contentFa,
-    ar: ar.trim() || contentFa
-  };
+/* toggle admin login box (called from logo click) */
+function toggleAdminLogin() {
+  const box = document.getElementById('admin-login');
+  if (box) box.classList.toggle('hidden');
 }
+window.toggleAdminLogin = toggleAdminLogin;
 
-
-
-
-function cleanText(t) {
-  return t.replace(/^[\uFEFF\u200E\u200F\u202A-\u202E]+/, '').trim();
+/* Toggle mobile menu (hamburger) - ensures menu appears on small screens */
+function toggleMenu() {
+  const menu = document.querySelector('.menu');
+  if (!menu) return;
+  menu.classList.toggle('show');
+  // if show, force display flex (menu CSS controls layout)
+  if (menu.classList.contains('show')) {
+    menu.style.display = 'flex';
+  } else {
+    menu.style.display = '';
+  }
 }
+window.toggleMenu = toggleMenu;
 
-function decodeEntities(str) {
-  if (!str) return ''; // اگر خالی بود، برگردون رشته خالی
-  const txt = document.createElement("textarea");
-  txt.innerHTML = str;
-  return txt.value;
+function showAdminTab(id) {
+  document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.classList.add('hidden');
+    tab.style.display = 'none';
+  });
+  const t = document.getElementById(id);
+  if (t) {
+    t.classList.remove('hidden');
+    t.style.display = 'block';
+  }
 }
+window.showAdminTab = showAdminTab;
 
-async function translateAboutSection() {
-  const faText = document.getElementById('about-fa').textContent.trim();
-  console.log("FA:", faText);
+/* ==== UPDATE ADMIN CREDENTIALS (Firebase Auth) ==== */
+async function updateAdminCredentials() {
+  const newEmail = document.getElementById('new-username').value.trim();
+  const newPassword = document.getElementById('new-password').value.trim();
 
-  const enRaw = await translateTextSmart(faText, 'fa', 'en');
-  const arRaw = await translateTextSmart(faText, 'fa', 'ar');
-  console.log("EN raw:", enRaw);
-  console.log("AR raw:", arRaw);
-console.log("EN raw:", enRaw);
-  const enText = enRaw ? decodeEntities(enRaw) : '';
-  const arText = arRaw ? decodeEntities(arRaw) : '';
-  console.log("EN decoded:", enText);
-  console.log("AR decoded:", arText);
-
-  document.getElementById('about-en').textContent = enText;
-  document.getElementById('about-ar').textContent = arText;
-}
-
-async function saveBlogWithTranslation(titleFa, bodyFa, category = "") {
-  const title = await autoTranslateContent(titleFa);
-  const body = await autoTranslateContent(bodyFa);
-
-  const blog = { title, body, category, date: new Date().toISOString() };
-  await window.storageBridge.saveBlog(blog);
-
-  console.log("✅ Blog saved with translations:", blog);
-  loadBlogsFromStorage();
-  loadPublicBlogs();
-}
-
-
-// ✅ تابع جدید و تمیز برای افزودن بلاگ
-async function addBlog() {
-  const faTitle = document.getElementById('blog-title')?.value?.trim() || '';
-  const faBody = document.getElementById('blog-body-fa')?.value?.trim() || '';
-  const category = document.getElementById('blog-category')?.value || 'general';
-
-  if (!faTitle || !faBody) {
-    alert('❌ لطفاً عنوان و متن را وارد کنید.');
+  if (!firebaseAuth?.currentUser) {
+    showNotification("⚠️ You must be logged in as admin to change credentials.", 'warning');
     return;
   }
 
-  // ترجمه خودکار سریع و کامل
-  const title = await autoTranslateContent(faTitle);
-  const body = await autoTranslateContent(faBody);
+  try {
+    if (newEmail) {
+      await window.firebaseAuth.currentUser.updateEmail(newEmail);
+      console.info('✅ Email updated:', newEmail);
+    }
 
-  const blog = {
-    title,
-    body,
-    category,
-    date: new Date().toISOString()
+    if (newPassword) {
+      await window.firebaseAuth.currentUser.updatePassword(newPassword);
+      console.info('✅ Password updated');
+    }
+
+  showNotification("✅ Credentials updated successfully!", 'success');
+  } catch (error) {
+    console.error("❌ updateAdminCredentials failed:", error);
+    if (error.code === "auth/requires-recent-login") {
+  showNotification("⚠️ Please log out and log back in before changing credentials.", 'warning');
+    } else if (error.code === "auth/invalid-email") {
+  showNotification("❌ Invalid email format.", 'error');
+    } else if (error.code === "auth/weak-password") {
+  showNotification("❌ Password should be at least 6 characters.", 'error');
+    } else {
+  showNotification("Error: " + error.message, 'error');
+    }
+  }
+}
+
+
+/* ==== CONTACT INFO FUNCTIONS ==== */
+async function loadContactInfo() {
+  try {
+    const contactData = await window.storageBridge.loadContact();
+    if (contactData) {
+      document.getElementById('admin-phone').value = contactData.phone || '';
+      document.getElementById('admin-email').value = contactData.email || '';
+      document.getElementById('admin-social').value = contactData.social || '';
+    }
+  } catch (e) {
+    console.warn("⚠️ loadContactInfo failed:", e);
+  }
+}
+
+async function saveContactInfo() {
+  const phone = document.getElementById('admin-phone').value.trim();
+  const email = document.getElementById('admin-email').value.trim();
+  const social = document.getElementById('admin-social').value.trim();
+
+  if (!phone || !email) { showNotification('⚠️ Please fill both phone and email.', 'warning'); return; }
+
+  const contactData = { phone, email, social, updated: new Date().toISOString() };
+
+  try {
+    await window.storageBridge.saveContact(contactData);
+  showNotification('✅ Contact info saved to Firebase.', 'success');
+  } catch (e) {
+    console.error('❌ saveContactInfo failed:', e);
+  showNotification('Error saving contact info.', 'error');
+  }
+}
+
+// بارگذاری خودکار هنگام باز شدن تب
+window.addEventListener('DOMContentLoaded', loadContactInfo);
+
+
+/* show admin panel after successful login */
+function showAdminPanelAfterLogin() {
+  const loginBox = document.getElementById('admin-login');
+  const adminPanel = document.getElementById('admin-panel');
+  if (loginBox) loginBox.classList.add('hidden');
+  if (adminPanel) {
+    adminPanel.classList.remove('hidden');
+    adminPanel.style.display = 'block';
+  }
+  document.querySelectorAll('#admin-logout-btn').forEach(btn => btn.classList.remove('hidden'));
+  // hide public sections entirely
+  document.querySelectorAll('.public-section').forEach(sec => { sec.classList.add('hidden'); sec.style.display = 'none'; });
+  // show default admin tab
+  showAdminTab('about-tab');
+}
+window.showAdminPanelAfterLogin = showAdminPanelAfterLogin;
+
+/* perform logout UI update (called after firebase signOut complete) */
+function performLogoutUI() {
+  const adminPanel = document.getElementById('admin-panel');
+  const loginBox = document.getElementById('admin-login');
+  if (adminPanel) { 
+    adminPanel.classList.add('hidden'); 
+    adminPanel.style.display = 'none'; 
+  }
+  if (loginBox) { 
+    loginBox.classList.add('hidden');
+    // پاک کردن فیلدهای فرم لاگین
+    document.getElementById('adminUser').value = '';
+    document.getElementById('adminPass').value = '';
+  }
+  document.querySelectorAll('#admin-logout-btn').forEach(b => b.classList.add('hidden'));
+  // نمایش بخش عمومی درباره من
+  showSection('about');
+}
+window.performLogoutUI = performLogoutUI;
+
+/* ---------- Firebase-driven wrappers (call storageBridge) ---------- */
+
+/* load About from bridge and run typing */
+function loadAbout() {
+  try {
+    window.storageBridge?.loadAbout?.().then(about => {
+      if (about && (about.en || about.fa)) {
+        const text = about.en || about.fa || "";
+        const aboutEl = document.getElementById('about-en');
+        if (aboutEl) {
+          aboutEl.innerHTML = ''; // Clear previous content
+          typeText(aboutEl, text, 35);
+        }
+      }
+    });
+  } catch (e) {
+    console.warn('loadAbout failed', e);
+  }
+}
+
+window.loadAbout = loadAbout;
+
+// تابع showSection در بالای فایل تعریف شده است
+
+/* saveAbout (called from admin textarea) */
+async function saveAbout(text) {
+  if (!text || !text.trim()) { showNotification('Please enter about text.', 'warning'); return; }
+  const payload = { en: text.trim(), updated: new Date().toISOString() };
+  try {
+    await window.storageBridge.saveAbout(payload);
+  showNotification('✅ About saved.', 'success');
+    await loadAbout();
+  } catch (e) {
+    console.error(e);
+  showNotification('❌ Saving about failed.', 'error');
+  }
+}
+window.saveAbout = saveAbout;
+
+/* ==== About Editor Formatting ==== */
+function formatText(command) {
+  document.execCommand(command, false, null);
+}
+
+function addLink() {
+  const url = prompt("Enter URL:");
+  if (url) document.execCommand("createLink", false, url);
+}
+
+async function clearAboutText() {
+  if (!confirm("Are you sure you want to clear the About content? This will delete it from both the editor and Firebase.")) {
+    return;
+  }
+
+  const editor = document.getElementById("about-editor");
+  if (editor) {
+    editor.innerHTML = "";
+  }
+
+  try {
+    await window.storageBridge.saveAbout({ en: "", updated: new Date().toISOString() });
+    const aboutEl = document.getElementById("about-en");
+    if (aboutEl) {
+      aboutEl.innerHTML = "";
+    }
+    showNotification("✅ About content cleared successfully!", 'success');
+  } catch (e) {
+    console.error("Clear about failed:", e);
+    showNotification("❌ Could not clear about section.", 'error');
+  }
+}
+
+/* ==== Save About using contenteditable area ==== */
+async function saveAboutFromEditor() {
+  const editor = document.getElementById("about-editor");
+  if (!editor) { showNotification("Editor not found.", 'error'); return; }
+  const html = editor.innerHTML.trim();
+  if (!html) { showNotification("Please write something first.", 'warning'); return; }
+
+  const aboutData = { 
+    en: html, 
+    updated: new Date().toISOString() 
   };
 
   try {
-    await window.storageBridge.saveBlog(blog);
-    document.getElementById('blog-title').value = '';
-    document.getElementById('blog-body-fa').value = '';
-    loadBlogsFromStorage();
-    loadPublicBlogs(true);
-    alert('✅ بلاگ با ترجمه کامل ذخیره شد.');
+    // ذخیره در فایربیس
+    await window.storageBridge.saveAbout(aboutData);
+
+    // پاک کردن ادیتور
+    editor.innerHTML = "";
+
+    // بروزرسانی لیست و نمایش در صفحه اصلی
+    await loadSavedAbouts();
+    await loadAbout();
+
+    showNotification("✅ متن با موفقیت ذخیره شد!", 'success');
   } catch (e) {
-    console.error('Failed to save blog:', e);
-    alert('❌ خطا در ذخیره‌سازی مقاله.');
+    console.error("Save about failed:", e);
+    showNotification("❌ خطا در ذخیره متن", 'error');
   }
 }
 
-function loadPortfolio() {
-  const saved = localStorage.getItem('portfolio');
-  if (!saved) return;
 
-  const galleryTrack = document.querySelector('.gallery-track');
-  if (!galleryTrack) return;
-
-  galleryTrack.innerHTML = '';
-  const items = JSON.parse(saved);
-  items.forEach(({ title, link, image }) => {
-    const a = document.createElement('a');
-    a.href = link;
-    a.target = '_blank';
-    a.innerHTML = `<img src="${image}" alt="${title}" />`;
-    galleryTrack.appendChild(a);
-  });
+/* ==== Load About Content ==== */
+async function loadAboutEditor() {
+  try {
+    const aboutData = await window.storageBridge.loadAbout();
+    const editor = document.getElementById("about-editor");
+    // بارگذاری در ادیتور (نمایش متن اصلی برای ویرایش)
+    if (editor) {
+      editor.innerHTML = aboutData?.en || "";
+    }
+  } catch (e) {
+    console.warn("⚠️ loadAboutEditor failed:", e);
+  }
 }
 
-function addPortfolio() {
-  const title = document.getElementById('portfolio-title').value.trim();
-  const link = document.getElementById('portfolio-link').value.trim();
-  const image = document.getElementById('portfolio-image').value.trim();
+/* ==== Load saved abouts (list + main) and render admin list ==== */
+async function loadSavedAbouts() {
+  try {
+    const listNode = document.getElementById('about-items-list');
+    if (listNode) listNode.innerHTML = '';
 
-  if (!title || !link || !image) {
-    alert('Please fill in all fields.');
+    // load main about (single)
+    const main = await window.storageBridge.loadAbout();
+
+    // load saved list
+    const arr = await (window.storageBridge.loadAboutList ? window.storageBridge.loadAboutList() : Promise.resolve([]));
+    const items = Array.isArray(arr) ? arr : [];
+    if (!listNode) return;
+
+    // render main as first item (editable/deleteable as special 'main' item)
+    if (main?.en) {
+      const div = document.createElement('div');
+      div.className = 'about-item';
+      div.innerHTML = `
+        <div class="about-item-content">${main.en}</div>
+        <div class="about-item-actions">
+          <button class="edit-about-btn" data-id="__main">✏️ Edit</button>
+          <button class="delete-about-btn" data-id="__main">🗑️ Delete</button>
+        </div>
+      `;
+      listNode.appendChild(div);
+    }
+
+    // render each saved item
+    items.forEach(it => {
+      const id = it.id || '';
+      const div = document.createElement('div');
+      div.className = 'about-item';
+      div.innerHTML = `
+        <div class="about-item-content">${it.en}</div>
+        <div class="about-item-actions">
+          <button class="edit-about-btn" data-id="${id}">✏️ Edit</button>
+          <button class="delete-about-btn" data-id="${id}">🗑️ Delete</button>
+        </div>
+        <div class="about-item-date">${it.updated ? new Date(it.updated).toLocaleString() : ''}</div>
+      `;
+      listNode.appendChild(div);
+    });
+
+    // attach handlers
+    listNode.querySelectorAll('.edit-about-btn').forEach(btn => {
+      btn.onclick = async (e) => {
+        const id = btn.getAttribute('data-id');
+        const editor = document.getElementById('about-editor');
+        if (!editor) return;
+        if (id === '__main') {
+          const mainData = await window.storageBridge.loadAbout();
+          editor.innerHTML = mainData?.en || '';
+        } else {
+          const list = await window.storageBridge.loadAboutList();
+          const found = (list || []).find(x => x.id === id);
+          editor.innerHTML = found?.en || '';
+        }
+        editor.focus();
+      };
+    });
+
+    listNode.querySelectorAll('.delete-about-btn').forEach(btn => {
+      btn.onclick = async (e) => {
+        const id = btn.getAttribute('data-id');
+        if (!confirm('Are you sure you want to delete this about text?')) return;
+        if (id === '__main') {
+          await window.storageBridge.saveAbout({ en: '', updated: new Date().toISOString() });
+        } else {
+          await window.storageBridge.deleteAbout(id);
+        }
+        await loadSavedAbouts();
+        await loadAbout();
+      };
+    });
+
+  } catch (e) {
+    console.warn('loadSavedAbouts failed', e);
+  }
+}
+
+// Load content when admin tabs are shown
+window.showAdminTab = function(id) {
+  document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.classList.add('hidden');
+    tab.style.display = 'none';
+  });
+  const t = document.getElementById(id);
+  if (t) {
+    t.classList.remove('hidden');
+    t.style.display = 'block';
+    
+    // Load content based on tab
+    if (id === 'about-tab') {
+      loadAboutEditor();
+      loadSavedAbouts();
+    } else if (id === 'blog-tab') {
+      loadBlogsFromStorage(); // Load blogs when blog tab is opened
+    }
+  }
+}
+
+/* Blogs: add, load admin list, load public */
+async function addBlog() {
+  const title = (document.getElementById('blog-title')?.value || '').trim();
+  const bodyHtml = document.getElementById('blog-body-editor')?.innerHTML?.trim() || '';
+  const category = (document.getElementById('blog-category')?.value) || 'general';
+
+  if (!title || !bodyHtml) { showNotification('Please enter title and body.', 'warning'); return; }
+
+  const blog = { title: { en: title }, body: { en: bodyHtml }, category, date: new Date().toISOString() };
+  try {
+    // support simple edit-mode: if admin set data-edit-idx on the add button, remove the old entry then add new
+    const addBtn = document.getElementById('blog-add-btn');
+    const editIdx = addBtn?.getAttribute('data-edit-idx');
+    if (editIdx !== null && editIdx !== undefined && editIdx !== '') {
+      const blogs = await window.storageBridge.loadBlogs();
+      const idx = parseInt(editIdx);
+      const toDeleteId = (Array.isArray(blogs) && blogs[idx]) ? blogs[idx].id : null;
+      if (toDeleteId) await window.storageBridge.deleteBlog(toDeleteId, idx);
+      addBtn.removeAttribute('data-edit-idx');
+      addBtn.textContent = 'Add Blog';
+    }
+
+    await window.storageBridge.saveBlog(blog);
+    showNotification('✅ Blog saved.', 'success');
+    document.getElementById('blog-title').value = '';
+    document.getElementById('blog-body-editor').innerHTML = '';
+    await loadBlogsFromStorage();
+    await loadPublicBlogs(true);
+  } catch (e) {
+    console.error(e);
+    showNotification('❌ Save blog failed.', 'error');
+  }
+}
+window.addBlog = addBlog;
+
+async function loadBlogsFromStorage() {
+  const node = document.getElementById('blog-items-list');
+  if (!node) return;
+  node.innerHTML = '';
+  try {
+    const blogs = await window.storageBridge.loadBlogs();
+    if (!Array.isArray(blogs)) return;
+    blogs.forEach((b, idx) => {
+      const title = (b.title && (b.title.en || b.title.fa)) || (typeof b.title === 'string' ? b.title : 'Untitled');
+      const body = (b.body && (b.body.en || b.body.fa)) || (typeof b.body === 'string' ? b.body : '');
+      const date = b.date ? new Date(b.date).toLocaleString() : '';
+      
+      const div = document.createElement('div');
+      div.className = 'blog-item';
+      div.innerHTML = `
+        <div class="blog-item-header">
+          <h3>${title}</h3>
+          <span class="blog-item-category">${b.category || 'General'}</span>
+        </div>
+        <div class="blog-item-content">${body}</div>
+        <div class="blog-item-actions">
+          <button class="edit-blog-btn" data-idx="${idx}">✏️ Edit</button>
+          <button class="delete-blog-btn" data-id="${b.id || ''}" data-idx="${idx}">🗑️ Delete</button>
+        </div>
+        <div class="blog-item-date">${date}</div>
+      `;
+      node.appendChild(div);
+    });
+
+    // attach delete handlers
+    node.querySelectorAll('.delete-blog-btn').forEach(btn => {
+      btn.onclick = async (e) => {
+        const id = btn.getAttribute('data-id');
+        const idx = parseInt(btn.getAttribute('data-idx'));
+        if (!confirm('Are you sure you want to delete this blog post?')) return;
+        await window.storageBridge.deleteBlog(id || null, idx);
+        await loadBlogsFromStorage();
+        await loadPublicBlogs(true);
+      };
+    });
+
+    // attach edit handlers
+    node.querySelectorAll('.edit-blog-btn').forEach(btn => {
+      btn.onclick = async (e) => {
+        const idx = parseInt(btn.getAttribute('data-idx'));
+        const blogs = await window.storageBridge.loadBlogs();
+        const b = (blogs || [])[idx];
+        if (!b) return;
+        document.getElementById('blog-title').value = (b.title && b.title.en) || '';
+        document.getElementById('blog-body-editor').innerHTML = (b.body && b.body.en) || '';
+        const addBtn = document.getElementById('blog-add-btn');
+        if (addBtn) { addBtn.textContent = 'Update Blog'; addBtn.setAttribute('data-edit-idx', idx); }
+      };
+    });
+  } catch (e) {
+    console.warn('loadBlogsFromStorage failed', e);
+  }
+}
+window.loadBlogsFromStorage = loadBlogsFromStorage;
+
+let _blogsLoadedOnce = false;
+async function loadPublicBlogs(force = false) {
+  const node = document.getElementById('public-blog-list');
+  if (!node) return;
+  if (_blogsLoadedOnce && !force) return;
+  node.innerHTML = '';
+  try {
+    const blogs = await window.storageBridge.loadBlogs();
+    if (!Array.isArray(blogs) || blogs.length === 0) {
+      node.innerHTML = '<p>هنوز مطلبی منتشر نشده است.</p>';
+      return;
+    }
+    blogs.forEach(b => {
+      const title = (b.title && (b.title.en || b.title.fa)) || (typeof b.title === 'string' ? b.title : 'Untitled');
+      const body = (b.body && (b.body.en || b.body.fa)) || (typeof b.body === 'string' ? b.body : '');
+      const article = document.createElement('article');
+      article.setAttribute('data-category', b.category || '');
+      // create a plain-text snippet of the HTML body
+      const tmp = document.createElement('div');
+      tmp.innerHTML = body;
+      const plain = (tmp.textContent || tmp.innerText || '').trim();
+      const snippet = plain.length > 250 ? plain.slice(0,250) + '...' : plain;
+      article.innerHTML = `
+        <h3>${title}</h3>
+        <div class="blog-snippet">${snippet}</div>
+        <div class="blog-full-content hidden"></div>
+        <button class="read-more-btn">Continue reading</button>
+      `;
+
+      const readBtn = article.querySelector('.read-more-btn');
+      const snippetNode = article.querySelector('.blog-snippet');
+      const fullNode = article.querySelector('.blog-full-content');
+
+      readBtn.onclick = () => {
+        // Toggle inline full content
+        if (fullNode.classList.contains('hidden')) {
+          fullNode.innerHTML = body || '';
+          fullNode.classList.remove('hidden');
+          snippetNode.classList.add('hidden');
+          readBtn.textContent = 'Show less';
+        } else {
+          fullNode.innerHTML = '';
+          fullNode.classList.add('hidden');
+          snippetNode.classList.remove('hidden');
+          readBtn.textContent = 'Continue reading';
+        }
+      };
+      node.appendChild(article);
+    });
+    _blogsLoadedOnce = true;
+  } catch (e) {
+    console.warn('loadPublicBlogs failed', e);
+  }
+}
+window.loadPublicBlogs = loadPublicBlogs;
+
+
+/* --- Handle Project Files Upload --- */
+let uploadedFiles = [];
+async function handleProjectFiles(event) {
+  const fileList = event.target.files;
+  const filesListDiv = document.getElementById('uploaded-files-list');
+  if (filesListDiv) filesListDiv.innerHTML = '';
+  uploadedFiles = [];
+
+  for (const file of Array.from(fileList)) {
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = (err) => reject(err);
+      reader.readAsDataURL(file);
+    });
+
+    uploadedFiles.push({
+      name: file.name,
+      type: file.type,
+      size: file.size,
+      data: base64
+    });
+
+    if (filesListDiv) {
+      const fileDiv = document.createElement('div');
+      fileDiv.className = 'uploaded-file-item';
+      fileDiv.innerHTML = `<span class="file-name">📄 ${file.name}</span>
+                           <span class="file-size">(${(file.size/1024).toFixed(1)} KB)</span>`;
+      filesListDiv.appendChild(fileDiv);
+    }
+  }
+}
+window.handleProjectFiles = handleProjectFiles;
+
+/* --- addPortfolio: add or update item, save via storageBridge --- */
+async function addPortfolio() {
+  const title = (document.getElementById('portfolio-title')?.value || '').trim();
+  const link = (document.getElementById('portfolio-link')?.value || '').trim();
+  const imageInput = document.getElementById('portfolio-image-file');
+  const imageUrlInput = (document.getElementById('portfolio-image')?.value || '').trim();
+  const saveBtn = document.getElementById('portfolio-save-btn');
+
+  let finalImage = imageUrlInput;
+
+  // if user selected an image file, convert to base64 and use it
+  if (imageInput && imageInput.files && imageInput.files.length > 0) {
+    const file = imageInput.files[0];
+    finalImage = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = (err) => reject(err);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  if (!title || !finalImage) {
+    showNotification('❌ Please provide at least a title and an image.', 'warning');
     return;
   }
 
-  const item = { title, link, image };
-  const saved = localStorage.getItem('portfolio');
-  const portfolio = saved ? JSON.parse(saved) : [];
-  portfolio.push(item);
-  localStorage.setItem('portfolio', JSON.stringify(portfolio));
+  // load existing items
+  const allItems = await (window.storageBridge?.loadPortfolio?.() || []);
+  const newItem = {
+    title,
+    link: link || '',
+    image: finalImage,
+    date: new Date().toISOString(),
+    files: Array.isArray(uploadedFiles) ? uploadedFiles.slice() : []
+  };
 
-  loadPortfolio();
+  // edit mode?
+  const editIndexAttr = saveBtn?.getAttribute('data-edit-index');
+  if (editIndexAttr !== null && editIndexAttr !== '') {
+    const idx = parseInt(editIndexAttr);
+    allItems[idx] = newItem;
+    if (saveBtn) { saveBtn.removeAttribute('data-edit-index'); saveBtn.textContent = '💾 Save Portfolio'; }
+    await window.storageBridge.savePortfolio(allItems);
+    showNotification('✅ Portfolio item updated.', 'success');
+  } else {
+    allItems.push(newItem);
+    await window.storageBridge.savePortfolio(allItems);
+    showNotification('✅ Portfolio item saved.', 'success');
+  }
 
+  // reset form
   document.getElementById('portfolio-title').value = '';
   document.getElementById('portfolio-link').value = '';
   document.getElementById('portfolio-image').value = '';
+  if (document.getElementById('portfolio-image-file')) document.getElementById('portfolio-image-file').value = '';
+  if (document.getElementById('portfolio-preview')) document.getElementById('portfolio-preview').classList.add('hidden');
+  uploadedFiles = [];
+
+  await loadPortfolio();
+  await loadPortfolioAdmin();
 }
+window.addPortfolio = addPortfolio;
 
-function loadPortfolioAdmin() {
-  const saved = localStorage.getItem('portfolio');
-  const portfolio = saved ? JSON.parse(saved) : [];
-  const list = document.getElementById('portfolio-list');
-  list.innerHTML = '';
-
-  portfolio.forEach((item, index) => {
-    const div = document.createElement('div');
-    div.className = 'portfolio-admin-item';
-    div.innerHTML = `
-      <img src="${item.image}" alt="${item.title}" />
-      <div class="portfolio-admin-info">
-        <strong>${item.title}</strong>
-        <button onclick="editPortfolio(${index})">✏️ Edit</button>
-        <button onclick="deletePortfolio(${index})">🗑️ Delete</button>
-      </div>
-    `;
-    list.appendChild(div);
-  });
-}
-
-function deletePortfolio(index) {
-  const saved = localStorage.getItem('portfolio');
-  const portfolio = saved ? JSON.parse(saved) : [];
-  portfolio.splice(index, 1);
-  localStorage.setItem('portfolio', JSON.stringify(portfolio));
-  loadPortfolio();
-  loadPortfolioAdmin();
-}
-
-function editPortfolio(index) {
-  const saved = localStorage.getItem('portfolio');
-  const portfolio = saved ? JSON.parse(saved) : [];
-  const item = portfolio[index];
-
-  document.getElementById('portfolio-title').value = item.title;
-  document.getElementById('portfolio-link').value = item.link;
-  document.getElementById('portfolio-image').value = item.image;
-
-  portfolio.splice(index, 1);
-  localStorage.setItem('portfolio', JSON.stringify(portfolio));
-  loadPortfolio();
-  loadPortfolioAdmin();
-}
-
-function openPreview(path) {
-  const viewer = document.getElementById('portfolio-viewer');
-  viewer.innerHTML = `<iframe src="${path}" frameborder="0"></iframe>`;
-  viewer.style.display = 'block';
-}
-
-async function translateTextSmart(text, source = "fa", target = "en") {
-  if (!text || typeof text !== "string") return "";
-
-  const endpoint = "https://script.google.com/macros/s/AKfycbzQP25LIwXN_fZnBwXkGxc5ww7gHOtPgz3A7hHfehgl9uZs8lrgcSPXNXcCOJSaj3AB/exec";
-  const key = "IliyaTranslate2025";
-
-  // خرد کردن متن بلند به جمله‌ها تا ترجمه ناقص نشود
-  const sentences = text.split(/(?<=[.!؟])\s+/);
-  const results = [];
-
-  for (const part of sentences) {
-    const url = `${endpoint}?text=${encodeURIComponent(part)}&target=${target}&key=${key}`;
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.translatedText) results.push(data.translatedText);
-      else results.push(part);
-      await new Promise(r => setTimeout(r, 1200)); // تاخیر کوتاه بین ترجمه‌ها
-    } catch (err) {
-      console.error("Translation failed for part:", part, err);
-      results.push(part);
+/* --- Delete item --- */
+async function deletePortfolio(index) {
+  try {
+    if (!confirm('🗑️ Are you sure you want to delete this project? This action cannot be undone.')) return;
+    
+    showNotification('🗑️ Deleting project...', 'info');
+    
+    // Load current items
+    const items = await (window.storageBridge?.loadPortfolio?.() || []);
+    const itemToDelete = items[index];
+    
+    if (!itemToDelete) {
+      showNotification('❌ Project not found!', 'error');
+      return;
     }
-  }
 
-  return results.join(" ");
+    // Remove from array
+    items.splice(index, 1);
+
+    // Save updated list to Firebase
+    await window.storageBridge.savePortfolio(items);
+
+    // Refresh both public and admin views
+    await loadPortfolio();
+    await loadPortfolioAdmin();
+    
+    showNotification('✅ Project deleted successfully!', 'success');
+  } catch (error) {
+    console.error('Delete portfolio error:', error);
+    showNotification('❌ Error deleting project: ' + error.message, 'error');
+  }
 }
 
+/* --- editPortfolio (populate form for editing) --- */
+async function editPortfolio(index) {
+  const items = await (window.storageBridge?.loadPortfolio?.() || []);
+  const it = items[index];
+  if (!it) return;
+  document.getElementById('portfolio-title').value = it.title || '';
+  document.getElementById('portfolio-link').value = it.link || '';
+  document.getElementById('portfolio-image').value = it.image || '';
+  const preview = document.getElementById('portfolio-preview');
+  if (preview) { preview.src = it.image || ''; preview.classList.remove('hidden'); }
+  // set uploadedFiles to existing files for potential update
+  uploadedFiles = Array.isArray(it.files) ? it.files.slice() : [];
+  const saveBtn = document.getElementById('portfolio-save-btn');
+  if (saveBtn) { saveBtn.textContent = '💾 Update Portfolio'; saveBtn.setAttribute('data-edit-index', index); }
+}
+window.editPortfolio = editPortfolio;
 
+/* --- loadPortfolio: render public gallery and attach open handlers --- */
+async function loadPortfolio() {
+  const galleryTrack = document.querySelector('.gallery-track');
+  if (!galleryTrack) return;
+  galleryTrack.innerHTML = '';
 
+  const items = await (window.storageBridge?.loadPortfolio?.() || []);
+  if (!Array.isArray(items)) return;
 
-// تابع جدید برای درباره‌من (با ترجمه خودکار بهینه)
-async function saveAbout(faText) {
-  const fa = (faText || document.getElementById('about-fa')?.value || '').trim();
-  if (!fa) {
-    alert('لطفا متن درباره من را وارد کنید.');
+  items.forEach((item, idx) => {
+    if (!item) return;
+    const wrapper = document.createElement('div');
+    wrapper.className = 'portfolio-card';
+
+    const img = document.createElement('img');
+    img.src = item.image || '';
+    img.alt = item.title || '';
+    img.loading = 'lazy';
+    img.className = 'portfolio-thumb';
+
+    // clickable area: use a button/anchor that calls openPortfolio
+    const btn = document.createElement('a');
+    btn.href = 'javascript:void(0)';
+    btn.className = 'portfolio-link';
+    btn.setAttribute('data-idx', idx);
+    btn.onclick = (e) => { e.preventDefault(); openPortfolio(idx); };
+
+    btn.appendChild(img);
+
+    // optional caption overlay
+    const cap = document.createElement('div');
+    cap.className = 'portfolio-caption';
+    cap.textContent = item.title || '';
+    wrapper.appendChild(btn);
+    wrapper.appendChild(cap);
+
+    galleryTrack.appendChild(wrapper);
+  });
+
+  // if you use sliding transform logic elsewhere, ensure galleryTrack children styled accordingly
+}
+window.loadPortfolio = loadPortfolio;
+
+/* --- openPortfolio: open link or file (index) for given index --- */
+async function openPortfolio(index) {
+  const items = await (window.storageBridge?.loadPortfolio?.() || []);
+  const item = items[index];
+  if (!item) return;
+
+  // 1) if item.link exists -> open directly
+  if (item.link && item.link.trim()) {
+    const url = item.link;
+    window.open(url, '_blank');
     return;
   }
 
-  // ✅ ترجمه با نسخه‌ی بهینه
-  let enText = fa, arText = fa;
-  try {
-    enText = await translateTextSmart(fa, 'fa', 'en');
-    arText = await translateTextSmart(fa, 'fa', 'ar');
-  } catch (e) {
-    console.warn('translateAbout failed', e);
+  // 2) if files exist try to find index.html (or any .html) and open as blob URL
+  if (Array.isArray(item.files) && item.files.length > 0) {
+    // prefer index.html
+    let file = item.files.find(f => /index\.html$/i.test(f.name));
+    if (!file) file = item.files.find(f => /\.html$/i.test(f.name));
+    if (file && file.data) {
+      try {
+        // file.data is base64/dataURL string -> fetch it then create blob URL
+        const res = await fetch(file.data);
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        window.open(blobUrl, '_blank');
+        return;
+      } catch (err) {
+        console.error('openPortfolio blob error', err);
+        showNotification('❌ Could not open project file.', 'error');
+      }
+    }
   }
 
-  const aboutData = { fa, en: enText, ar: arText, updated: new Date().toISOString() };
-  await window.storageBridge.saveAbout(aboutData);
-
-  // ✅ به‌روزرسانی لحظه‌ای در صفحه
-  document.getElementById('about-fa') && (document.getElementById('about-fa').textContent = fa);
-  document.getElementById('about-en') && (document.getElementById('about-en').textContent = enText);
-  document.getElementById('about-ar') && (document.getElementById('about-ar').textContent = arText);
-
-  alert('✅ متن درباره من ذخیره و ترجمه شد.');
-  console.log("✅ About section translated and saved:", aboutData);
+  // 3) nothing to open
+  showNotification('⚠️ No link or uploaded project file found for this item.', 'warning');
 }
+window.openPortfolio = openPortfolio;
 
 
-
-function loadAbout() {
-  const saved = localStorage.getItem('aboutSection');
-  if (!saved) return;
-
-  const about = JSON.parse(saved);
-  document.getElementById('about-fa').textContent = about.fa;
-  document.getElementById('about-en').textContent = about.en;
-  document.getElementById('about-ar').textContent = about.ar;
+/* --- previewPortfolioImage: preview single image file chosen --- */
+function previewPortfolioImage(event) {
+  const file = event.target.files && event.target.files[0];
+  const preview = document.getElementById('portfolio-preview');
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (preview) { preview.src = e.target.result; preview.classList.remove('hidden'); }
+    };
+    reader.readAsDataURL(file);
+  } else {
+    if (preview) { preview.src = ''; preview.classList.add('hidden'); }
+  }
 }
+window.previewPortfolioImage = previewPortfolioImage;
 
-function toggleLanguageMenu() {
-  const menu = document.getElementById('language-menu');
-  menu.classList.toggle('show');
+
+
+/* --- loadPortfolioAdmin: render admin list with edit/delete --- */
+async function loadPortfolioAdmin() {
+  const list = document.getElementById('portfolio-list');
+  if (!list) return;
+  list.innerHTML = '';
+
+  const items = await (window.storageBridge?.loadPortfolio?.() || []);
+  if (!Array.isArray(items)) return;
+
+  items.forEach((item, index) => {
+    const div = document.createElement('div');
+    div.className = 'portfolio-admin-item';
+    div.innerHTML = `
+      <div class="portfolio-header">
+        <h3 class="portfolio-title">${item.title || ''}</h3>
+        <div class="portfolio-actions">
+          <button class="edit-btn" data-idx="${index}">✏️ Edit</button>
+          <button class="delete-btn" data-idx="${index}">🗑️ Delete</button>
+        </div>
+      </div>
+      <div class="portfolio-content">
+        <div class="portfolio-image"><img src="${item.image || ''}" alt="${item.title || ''}" /></div>
+        <div class="portfolio-details">
+          ${item.link ? `<div class="portfolio-link"><a href="${item.link}" target="_blank">🔗 View Project</a></div>` : ''}
+          ${item.files && item.files.length ? `<div class="portfolio-files"><h4>📁 Files:</h4>
+            ${item.files.map(f => `<div class="file-item">📄 ${f.name} (${(f.size/1024).toFixed(1)} KB)</div>`).join('')}</div>` : ''}
+        </div>
+      </div>
+    `;
+    list.appendChild(div);
+
+    // attach handlers
+    div.querySelector('.edit-btn').onclick = () => editPortfolio(index);
+    div.querySelector('.delete-btn').onclick = async () => {
+      if (!confirm('🗑️ Delete this project?')) return;
+      const arr = await (window.storageBridge?.loadPortfolio?.() || []);
+      arr.splice(index,1);
+      await window.storageBridge.savePortfolio(arr);
+      await loadPortfolioAdmin();
+      await loadPortfolio();
+      showNotification('✅ Deleted', 'success');
+    };
+  });
 }
+window.loadPortfolioAdmin = loadPortfolioAdmin;
 
-function setLanguage(lang) {
-  document.documentElement.lang = lang;
-  document.documentElement.dir = lang === 'fa' || lang === 'ar' ? 'rtl' : 'ltr';
+/* Contact save/load */
+async function saveContactInfo() {
+  const phone = (document.getElementById('admin-phone')?.value || '').trim();
+  const email = (document.getElementById('admin-email')?.value || '').trim();
+  const social = (document.getElementById('admin-social')?.value || '').trim();
+  if (!phone || !email) { showNotification('Please fill phone and email.', 'warning'); return; }
+  try {
+    await window.storageBridge.saveContact({ phone, email, social });
+    showNotification('✅ Contact saved.', 'success');
+  } catch (e) {
+    console.warn(e);
+    showNotification('❌ Save contact failed.', 'error');
+  }
+}
+window.saveContactInfo = saveContactInfo;
 
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (translations[lang][key]) {
-      el.textContent = translations[lang][key];
+async function loadContactInfo() {
+  try {
+    const c = await window.storageBridge.loadContact();
+    if (!c) return;
+    document.getElementById('admin-phone') && (document.getElementById('admin-phone').value = c.phone || '');
+    document.getElementById('admin-email') && (document.getElementById('admin-email').value = c.email || '');
+    document.getElementById('admin-social') && (document.getElementById('admin-social').value = c.social || '');
+  } catch (e) { console.warn('loadContactInfo failed', e); }
+}
+window.loadContactInfo = loadContactInfo;
+
+/* small UI helpers */
+function scrollGallery(dir=1) {
+  const track = document.querySelector('.gallery-track');
+  if (!track) return;
+  const amount = 300;
+  track.scrollBy({ left: dir * amount, behavior: 'smooth' });
+}
+window.scrollGallery = scrollGallery;
+
+/* DOM ready: attach single submit handler (will call firebase login if available) */
+window.addEventListener('DOMContentLoaded', () => {
+  // ensure menu visible
+  const menu = document.querySelector('.menu');
+  if (menu) menu.style.display = "";
+
+  // attach login form safely (if bridge later replaces it, bridge will reattach)
+  const form = document.getElementById('admin-form');
+  if (form && !form.__attached) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      // prefer firebase login provided by bridge
+      if (typeof window.loginAdminFirebase === 'function') {
+        try {
+          await window.loginAdminFirebase(e);
+        } catch (err) {
+          console.warn('Firebase login failed', err);
+          return; // جلوگیری از اجرای ادامه کد در صورت خطا
+        }
+      } else {
+        showNotification('⚠️ Auth not ready. Please wait a moment and try again.', 'warning');
+      }
+    });
+    form.__attached = true;
+  }
+
+  // attach logout btn(s) to call performLogout (bridge provides it)
+  document.querySelectorAll('#admin-logout-btn').forEach(btn => {
+    if (!btn.__attached) {
+      btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        if (typeof window.performLogout === 'function') {
+          try { await window.performLogout(); } catch (err) { console.warn(err); window.performLogoutUI(); }
+        } else {
+          window.performLogoutUI();
+        }
+      });
+      btn.__attached = true;
     }
   });
-  localStorage.setItem('selectedLanguage', lang);
-  loadPublicBlogs();
-  showAboutByLang(lang);
-  applyTranslations(lang)
 
+  // logo click: toggle admin login (ensure still works after any replacements)
+  const logo = document.querySelector('.logo-title');
+  if (logo) {
+    logo.onclick = () => {
+      const box = document.getElementById('admin-login');
+      if (box) box.classList.toggle('hidden');
+    };
+  }
+
+  // show default public section
+  showSection('about');
+  loadAbout();
+});
+
+/* --- Simple rich text editor commands --- */
+function execCmd(command, value = null) {
+  document.execCommand(command, false, value);
 }
 
-function toggleMenu() {
-  const menu = document.querySelector('.menu');
-  menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-}
+/* ==== Portfolio slideshow logic ==== */
+let currentPortfolioIndex = 0;
 
 function scrollGallery(direction) {
   const track = document.querySelector('.gallery-track');
-  const scrollAmount = 300;
-  track.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+  const items = document.querySelectorAll('.gallery-track a');
+  if (!track || items.length === 0) return;
+
+  currentPortfolioIndex += direction;
+  if (currentPortfolioIndex < 0) currentPortfolioIndex = items.length - 1;
+  if (currentPortfolioIndex >= items.length) currentPortfolioIndex = 0;
+
+  track.style.transform = `translateX(-${currentPortfolioIndex * 100}%)`;
 }
 
-// let startX = 0;
-// document.querySelector('.gallery-track').addEventListener('touchstart', e => {
-//   startX = e.touches[0].clientX;
-// });
-
-// document.querySelector('.gallery-track').addEventListener('touchend', e => {
-//   const endX = e.changedTouches[0].clientX;
-//   const delta = startX - endX;
-//   if (Math.abs(delta) > 50) {
-//     scrollGallery(delta > 0 ? 1 : -1);
-//   }
-// }
-// );
-let startX = 0;
-const galleryTrackEl = document.querySelector('.gallery-track');
-if (galleryTrackEl) {
-  galleryTrackEl.addEventListener('touchstart', e => {
-    startX = e.touches[0].clientX;
-  });
-
-  galleryTrackEl.addEventListener('touchend', e => {
-    const endX = e.changedTouches[0].clientX;
-    const delta = startX - endX;
-    if (Math.abs(delta) > 50) {
-      scrollGallery(delta > 0 ? 1 : -1);
-    }
-  });
-}
-
-
-function showAboutByLang(lang) {
-  document.getElementById('about-fa').classList.add('hidden');
-  document.getElementById('about-en').classList.add('hidden');
-  document.getElementById('about-ar').classList.add('hidden');
-
-  if (lang === 'fa') {
-    document.getElementById('about-fa').classList.remove('hidden');
-  } else if (lang === 'en') {
-    document.getElementById('about-en').classList.remove('hidden');
-  } else if (lang === 'ar') {
-    document.getElementById('about-ar').classList.remove('hidden');
+// auto slide every 6s
+setInterval(() => {
+  const portfolioSection = document.getElementById('portfolio');
+  if (portfolioSection && !portfolioSection.classList.contains('hidden')) {
+    scrollGallery(1);
   }
-}
+}, 6000);
 
-function loadAbout() {
-  const saved = localStorage.getItem('aboutSection');
-  if (!saved) return;
-  const about = JSON.parse(saved);
-
-  document.getElementById('about-fa').textContent = about.fa;
-  document.getElementById('about-en').textContent = about.en;
-  document.getElementById('about-ar').textContent = about.ar;
-}
- </script>
-
- <!-- ===== Firebase bridge  ===== -->
-<script type="module">
-
- const firebaseConfig = {
-  apiKey: "AIzaSyB-_AtMVlICupwsLg-dAjfoO6cH-ItE5ls",
-  authDomain: "iliya-official.firebaseapp.com",
-  projectId: "iliya-official",
-  databaseURL:"https://iliya-official-default-rtdb.asia-southeast1.firebasedatabase.app",
-  storageBucket: "iliya-official.firebasestorage.app",
-  messagingSenderId: "525136175554",
-  appId: "1:525136175554:web:d3ef4c5cf938789bde765b",
-  measurementId: "G-NQQJE2NVP1"
-};
-  // ========================================================================
-
-  // حالت: اگر مقادیر واقعی را وارد نکردی، firebaseAvailable=false می‌ماند و fallback به localStorage انجام می‌شود
-  let firebaseAvailable = false;
-
-  // تابع کمکی برای بررسی آیا config پر شده یا نه
-  function isFirebaseConfigSet(cfg) {
-    return cfg && cfg.apiKey && cfg.databaseURL && cfg.projectId && cfg.appId;
-  }
-
-  if (isFirebaseConfigSet(firebaseConfig)) {
-    try {
-      import("https://www.gstatic.com/firebasejs/11.8.0/firebase-app.js").then(({ initializeApp }) => {
-        return Promise.all([
-          Promise.resolve(initializeApp(firebaseConfig)),
-          import("https://www.gstatic.com/firebasejs/11.8.0/firebase-database.js")
-        ]);
-      }).then(([appModule, dbModule]) => {
-        // dbModule شامل getDatabase, ref, push, get, remove, set است
-        const { getDatabase, ref, push, get, remove, set, child } = dbModule;
-        const db = getDatabase();
-
-        // توابع remote را به window متصل می‌کنیم (فقط اگر firebase قابل استفاده باشد)
-        window.remote = {
-          async saveBlogRemote(blogData) {
-            const blogsRef = ref(db, 'blogs');
-            await push(blogsRef, blogData);
-            return true;
-          },
-          async loadBlogsRemote() {
-            const blogsRef = ref(db, 'blogs');
-            const snap = await get(blogsRef);
-            if (!snap.exists()) return [];
-            const val = snap.val();
-            // تبدیل object -> array با id
-            return Object.keys(val).map(key => ({ id: key, ...val[key] }));
-          },
-          async deleteBlogRemote(id) {
-            if (!id) return false;
-            const itemRef = ref(db, `blogs/${id}`);
-            await remove(itemRef);
-            return true;
-          },
-          async saveAboutRemote(key, data) {
-            // نگه داشتن aboutSection در کلید about
-            const aboutRef = ref(db, `about/${key || 'main'}`);
-            await set(aboutRef, data);
-            return true;
-          },
-          async loadAboutRemote() {
-            const aboutRef = ref(db, 'about');
-            const snap = await get(aboutRef);
-            if (!snap.exists()) return null;
-            return snap.val();
-          }
-        };
-
-        firebaseAvailable = true;
-        console.info("Firebase bridge: connected and available.");
-      }).catch(err => {
-        console.warn("Firebase bridge: failed to initialize, fallback to localStorage.", err);
-      });
-    } catch (e) {
-      console.warn("Firebase bridge: exception, fallback to localStorage.", e);
-    }
-  } else {
-    console.info("Firebase bridge: no config set — using localStorage fallback.");
-  }
-
-  // Helper عمومی برای ذخیره/لود با fallback
-  window.storageBridge = {
-    // تلاش کن اول remote، اگر نبود localStorage
-    async saveBlog(blogData) {
-      if (firebaseAvailable && window.remote?.saveBlogRemote) {
-        try {
-          await window.remote.saveBlogRemote(blogData);
-          return { remote: true };
-        } catch (e) {
-          console.warn("saveBlog remote failed, using localStorage", e);
-        }
-      }
-      // fallback local
-      const saved = localStorage.getItem('blogs');
-      const arr = saved ? JSON.parse(saved) : [];
-      arr.push(blogData);
-      localStorage.setItem('blogs', JSON.stringify(arr));
-      return { remote: false };
-    },
-
-    async loadBlogs() {
-      if (firebaseAvailable && window.remote?.loadBlogsRemote) {
-        try {
-          const items = await window.remote.loadBlogsRemote();
-          // normalize => array of { title:{...}, body:{...}, date, id? }
-          return items.map(it => {
-            // if data stored as value without id, pass through
-            return it;
-          });
-        } catch (e) {
-          console.warn("loadBlogs remote failed, using localStorage", e);
-        }
-      }
-      const saved = localStorage.getItem('blogs');
-      return saved ? JSON.parse(saved) : [];
-    },
-
-    async deleteBlog(id, indexFallback) {
-      if (firebaseAvailable && id && window.remote?.deleteBlogRemote) {
-        try {
-          await window.remote.deleteBlogRemote(id);
-          return { remote: true };
-        } catch (e) {
-          console.warn("deleteBlog remote failed, fallback to local", e);
-        }
-      }
-      // fallback: حذف از localStorage با index
-      const saved = localStorage.getItem('blogs');
-      if (!saved) return { remote: false };
-      const arr = JSON.parse(saved);
-      if (typeof indexFallback === 'number') {
-        arr.splice(indexFallback, 1);
-        localStorage.setItem('blogs', JSON.stringify(arr));
-      } else {
-        // اگر id ندارد، حذف اولین مشابه
-        localStorage.setItem('blogs', JSON.stringify(arr));
-      }
-      return { remote: false };
-    },
-
-    async saveAbout(data) {
-      if (firebaseAvailable && window.remote?.saveAboutRemote) {
-        try {
-          await window.remote.saveAboutRemote('main', data);
-          return { remote: true };
-        } catch (e) {
-          console.warn("saveAbout remote failed, fallback to local", e);
-        }
-      }
-      localStorage.setItem('aboutSection', JSON.stringify(data));
-      return { remote: false };
-    },
-
-    async loadAbout() {
-      if (firebaseAvailable && window.remote?.loadAboutRemote) {
-        try {
-          const val = await window.remote.loadAboutRemote();
-          return val || null;
-        } catch (e) {
-          console.warn("loadAbout remote failed, fallback to local", e);
-        }
-      }
-      const saved = localStorage.getItem('aboutSection');
-      return saved ? JSON.parse(saved) : null;
-    }
-
-  };
 
 </script>
-<!-- ===== end Firebase bridge ===== -->
+
+<script type="module">
+/* ===== Firebase Bridge: Auth + Realtime DB + storageBridge ===== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-app.js";
+import { getDatabase, ref, push, get, remove, set } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-auth.js";
+
+/* --- Firebase config --- */
+const firebaseConfig = {
+  apiKey: "AIzaSyB-_AtMVlICupwsLg-dAjfoO6cH-ItE5ls",
+  authDomain: "iliya-official.firebaseapp.com",
+  databaseURL: "https://iliya-official-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "iliya-official",
+  storageBucket: "iliya-official.firebasestorage.app",
+  messagingSenderId: "525136175554",
+  appId: "1:525136175554:web:d3ef4c5cf938789bde765b"
+};
+
+/* --- Initialize Firebase --- */
+let app, db, auth;
+try {
+  app = initializeApp(firebaseConfig);
+  db = getDatabase(app);
+  auth = getAuth(app);
+  console.info("✅ Firebase initialized");
+} catch (e) {
+  console.error("❌ Firebase init failed", e);
+}
+
+/* ---------- storageBridge implementation ---------- */
+window.storageBridge = {
+  /* ===== ABOUT ===== */
+  async saveAbout(data) {
+    if (db) {
+      await set(ref(db, "about/main"), data);
+      return true;
+    }
+    localStorage.setItem("aboutSection", JSON.stringify(data));
+    return false;
+  },
+  async loadAbout() {
+    if (db) {
+      const snap = await get(ref(db, "about/main"));
+      return snap.exists() ? snap.val() : null;
+    }
+    try { return JSON.parse(localStorage.getItem("aboutSection") || "null"); } catch(e){ return null; }
+  },
+  
+  // New functions for managing multiple about texts
+  async saveAboutList(data) {
+    if (db) {
+      const listRef = ref(db, "about/texts");
+      const newItemRef = push(listRef);
+      await set(newItemRef, { ...data, id: newItemRef.key });
+      return true;
+    }
+    const list = JSON.parse(localStorage.getItem("aboutTexts") || "[]");
+    list.push(data);
+    localStorage.setItem("aboutTexts", JSON.stringify(list));
+    return false;
+  },
+  
+  async loadAboutList() {
+    if (db) {
+      const snap = await get(ref(db, "about/texts"));
+      if (!snap.exists()) return [];
+      const data = snap.val();
+      return Object.keys(data).map(key => ({
+        ...data[key],
+        id: key
+      }));
+    }
+    try { return JSON.parse(localStorage.getItem("aboutTexts") || "[]"); } catch(e){ return []; }
+  },
+  
+  async deleteAbout(id) {
+    if (db) {
+      await remove(ref(db, `about/texts/${id}`));
+      return true;
+    }
+    let list = JSON.parse(localStorage.getItem("aboutTexts") || "[]");
+    list = list.filter(item => item.id !== id);
+    localStorage.setItem("aboutTexts", JSON.stringify(list));
+    return false;
+  },
+
+  /* ===== BLOGS ===== */
+  async saveBlog(blog) {
+    if (db) {
+      const r = await push(ref(db, "blogs"), blog);
+      return { id: r.key };
+    }
+    const arr = JSON.parse(localStorage.getItem("blogs") || "[]");
+    arr.push(blog);
+    localStorage.setItem("blogs", JSON.stringify(arr));
+    return null;
+  },
+  async loadBlogs() {
+    if (db) {
+      const snap = await get(ref(db, "blogs"));
+      if (!snap.exists()) return [];
+      const val = snap.val();
+      return Object.keys(val).map(k => ({ id: k, ...val[k] }));
+    }
+    return JSON.parse(localStorage.getItem("blogs") || "[]");
+  },
+  async deleteBlog(id, idx) {
+    if (db && id) {
+      await remove(ref(db, `blogs/${id}`));
+      return true;
+    }
+    const arr = JSON.parse(localStorage.getItem("blogs") || "[]");
+    if (typeof idx === "number") arr.splice(idx, 1);
+    localStorage.setItem("blogs", JSON.stringify(arr));
+    return false;
+  },
+
+  /* ===== PORTFOLIO ===== */
+  async savePortfolio(data) {
+    // اضافه کردن مدیریت خطا برای فایل‌های بزرگ
+    try {
+      // بررسی سایز کل فایل‌ها
+      let totalSize = 0;
+      data.forEach(item => {
+        if (item.files) {
+          item.files.forEach(file => {
+            totalSize += file.data.length;
+          });
+        }
+      });
+
+      // هشدار اگر حجم داده‌ها خیلی زیاد است
+      if (totalSize > 10 * 1024 * 1024) { // 10MB
+        showNotification('⚠️ Total files size is too large. Consider uploading smaller files.', 'warning');
+      }
+
+      if (db) {
+        await set(ref(db, "portfolio/main"), data);
+        showNotification('✅ Portfolio saved successfully!', 'success');
+        return true;
+      }
+      localStorage.setItem("portfolio", JSON.stringify(data));
+      return false;
+    } catch (error) {
+      console.error('Portfolio save error:', error);
+      showNotification('❌ Error saving portfolio: ' + error.message, 'error');
+      throw error;
+    }
+  },
+  
+  async loadPortfolio() {
+    try {
+      if (db) {
+        const snap = await get(ref(db, "portfolio/main"));
+        return snap.exists() ? snap.val() : [];
+      }
+      try { return JSON.parse(localStorage.getItem("portfolio") || "[]"); }
+      catch(e){ return []; }
+    } catch (error) {
+      console.error('Portfolio load error:', error);
+      showNotification('❌ Error loading portfolio: ' + error.message, 'error');
+      return [];
+    }
+  },
+  async deletePortfolio(id, idx) {
+    if (db && id) {
+      await remove(ref(db, `portfolio/${id}`));
+      return true;
+    }
+    const arr = JSON.parse(localStorage.getItem("portfolio") || "[]");
+    if (typeof idx === "number") arr.splice(idx, 1);
+    localStorage.setItem("portfolio", JSON.stringify(arr));
+    return false;
+  },
+
+  /* ===== CONTACT ===== */
+  async saveContact(data) {
+    if (db) {
+      await set(ref(db, "contact/info"), data);
+      return true;
+    }
+    localStorage.setItem("contactInfo", JSON.stringify(data));
+    return false;
+  },
+  async loadContact() {
+    if (db) {
+      const snap = await get(ref(db, "contact/info"));
+      return snap.exists() ? snap.val() : {};
+    }
+    try { return JSON.parse(localStorage.getItem("contactInfo") || "{}"); }
+    catch(e){ return {}; }
+  }
+};
+
+/* ---------- Auth functions ---------- */
+if (auth) {
+  window.loginAdminFirebase = async function(event) {
+    if (event && event.preventDefault) event.preventDefault();
+    const userInput = (document.getElementById("adminUser")?.value || "").trim();
+    const pass = (document.getElementById("adminPass")?.value || "").trim();
+    if (!userInput || !pass) {
+      showNotification("⚠️ لطفاً نام کاربری و رمز عبور را وارد کنید", 'warning');
+      throw new Error("Missing credentials");
+    }
+
+    const email = userInput.includes("@") ? userInput : "alirezamotieerad@gmail.com";
+
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, pass);
+      if (cred?.user) {
+        window.showAdminPanelAfterLogin && window.showAdminPanelAfterLogin();
+        return cred;
+      } else {
+        showNotification("❌ خطا در ورود", 'error');
+        throw new Error("Login failed - no user");
+      }
+    } catch (err) {
+      console.error("Firebase login error", err);
+      if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password") {
+        showNotification("❌ نام کاربری یا رمز عبور اشتباه است", 'error');
+      } else {
+        showNotification("❌ خطا در ورود: " + err.message, 'error');
+      }
+      throw err;
+    }
+  };
+
+  window.performLogout = async function() {
+    try {
+      await signOut(auth);
+    } catch (e) {
+      console.warn("signOut failed", e);
+    }
+    // Update UI silently (no alerts/confirm)
+    window.performLogoutUI && window.performLogoutUI();
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.info("👑 Admin active:", user.email);
+      window._isAdminLoggedIn = true;
+    } else {
+      console.info("👤 Not logged in");
+      window._isAdminLoggedIn = false;
+      window.performLogoutUI && window.performLogoutUI();
+    }
+  });
+} else {
+  window.loginAdminFirebase = async function() { throw new Error("Auth not initialized"); };
+  window.performLogout = async function() { window.performLogoutUI && window.performLogoutUI(); };
+}
+
+console.info("✅ Firebase bridge ready (about + blog + portfolio + contact)");
+// After bridge is ready, trigger initial loads that depend on storageBridge
+try {
+  if (typeof window.loadAbout === 'function') {
+    window.loadAbout();
+  }
+  if (typeof window.loadPublicBlogs === 'function') {
+    window.loadPublicBlogs(true);
+  }
+} catch (e) {
+  console.warn('Post-bridge initial load failed', e);
+}
+</script>
+<!-- End Firebase Script -->
 
 </body>
 </html>
