@@ -1937,6 +1937,64 @@ html[dir="ltr"] {
   }
 }
 
+/* اصلاح استایل گالری */
+.gallery-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.gallery-track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-type: x mandatory;
+}
+
+.gallery-track a {
+  width: 80%;
+  max-width: 700px;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.gallery-track img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.3);
+}
+
+/* فلش‌ها داخل باکس عکس */
+.nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.7);
+  border: none;
+  font-size: 2.2rem;
+  cursor: pointer;
+  z-index: 5;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background 0.3s;
+}
+
+.nav-btn.left { left: 30px; }
+.nav-btn.right { right: 30px; }
+
+.nav-btn:hover {
+  background: rgba(255,255,255,0.9);
+}
+
+
 
 
 
