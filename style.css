@@ -2007,7 +2007,9 @@ html[dir="ltr"] {
 @media (max-width: 800px) {
   .gallery-track { padding: 20px 20px; }
   .portfolio-slide { min-width: 90% !important; }
-  .nav-btn.left, .nav-btn.right { width:56px; height:56px; left: 12px; right: 12px; }
+  .nav-btn.left, .nav-btn.right { width:56px; height:56px; }
+  .nav-btn.left { left: 12px; }
+  .nav-btn.right { right: 12px; }
 }
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Vazirmatn:wght@400;500;600&display=swap');
 html, body {
