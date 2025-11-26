@@ -421,6 +421,10 @@ function showSection(id) {
     if (id === 'about') {
       loadAbout();
     }
+    // Load portfolio when showing portfolio section
+    if (id === 'portfolio') {
+      loadPortfolio();
+    }
   }
 }
 window.showSection = showSection;
@@ -1094,10 +1098,31 @@ async function loadPortfolio() {
   galleryTrack.innerHTML = '';
 
   const items = await (window.storageBridge?.loadPortfolio?.() || []);
-  if (!Array.isArray(items)) return;
+  console.log('📁 Portfolio items loaded:', items);
+  console.log('📁 Is array?', Array.isArray(items));
+  console.log('📁 Items count:', Array.isArray(items) ? items.length : 'Not an array');
+  
+  if (!Array.isArray(items) || items.length === 0) {
+    console.warn('⚠️ No portfolio items to display');
+    return;
+  }
 
+  console.log(`✅ Creating ${items.length} portfolio cards...`);
+  
   items.forEach((item, idx) => {
-    if (!item) return;
+    if (!item) {
+      console.warn(`⚠️ Item ${idx} is null or undefined`);
+      return;
+    }
+    
+    console.log(`🎨 Portfolio card ${idx}:`, {
+      title: item.title,
+      hasImage: !!item.image,
+      imageLength: item.image ? item.image.length : 0,
+      link: item.link || 'NO LINK',
+      hasFiles: item.files ? item.files.length : 0
+    });
+    
     const wrapper = document.createElement('div');
     wrapper.className = 'portfolio-card';
 
@@ -1106,6 +1131,14 @@ async function loadPortfolio() {
     img.alt = item.title || '';
     img.loading = 'lazy';
     img.className = 'portfolio-thumb';
+    
+    // Debug: log if image fails to load
+    img.onerror = () => {
+      console.error(`❌ Failed to load image for: ${item.title}`);
+    };
+    img.onload = () => {
+      console.log(`✅ Image loaded successfully for: ${item.title}`);
+    };
 
     // clickable area: use a button/anchor that calls openPortfolio
     const btn = document.createElement('a');
@@ -1378,9 +1411,13 @@ try {
   app = initializeApp(firebaseConfig);
   db = getDatabase(app);
   auth = getAuth(app);
+  
   console.info("✅ Firebase initialized");
+  console.info("🔌 Database URL:", firebaseConfig.databaseURL);
+  console.info("💡 Note: WebSocket errors are normal - REST API fallback is active");
 } catch (e) {
   console.error("❌ Firebase init failed", e);
+  console.warn("⚠️ Will use REST API directly for data fetching");
 }
 
 /* ---------- storageBridge implementation ---------- */
@@ -1395,9 +1432,21 @@ window.storageBridge = {
     return false;
   },
   async loadAbout() {
-    if (db) {
-      const snap = await get(ref(db, "about/main"));
-      return snap.exists() ? snap.val() : null;
+    try {
+      if (db) {
+        try {
+          const snap = await get(ref(db, "about/main"));
+          return snap.exists() ? snap.val() : null;
+        } catch (sdkError) {
+          console.warn('⚠️ About SDK error, trying REST API:', sdkError);
+          const response = await fetch('https://iliya-official-default-rtdb.asia-southeast1.firebasedatabase.app/about/main.json');
+          if (response.ok) {
+            return await response.json();
+          }
+        }
+      }
+    } catch (e) {
+      console.error('❌ loadAbout error:', e);
     }
     try { return JSON.parse(localStorage.getItem("aboutSection") || "null"); } catch(e){ return null; }
   },
@@ -1452,11 +1501,27 @@ window.storageBridge = {
     return null;
   },
   async loadBlogs() {
-    if (db) {
-      const snap = await get(ref(db, "blogs"));
-      if (!snap.exists()) return [];
-      const val = snap.val();
-      return Object.keys(val).map(k => ({ id: k, ...val[k] }));
+    try {
+      if (db) {
+        try {
+          const snap = await get(ref(db, "blogs"));
+          if (!snap.exists()) return [];
+          const val = snap.val();
+          return Object.keys(val).map(k => ({ id: k, ...val[k] }));
+        } catch (sdkError) {
+          console.warn('⚠️ Blogs SDK error, trying REST API:', sdkError);
+          const response = await fetch('https://iliya-official-default-rtdb.asia-southeast1.firebasedatabase.app/blogs.json');
+          if (response.ok) {
+            const val = await response.json();
+            if (val) {
+              return Object.keys(val).map(k => ({ id: k, ...val[k] }));
+            }
+          }
+          return [];
+        }
+      }
+    } catch (e) {
+      console.error('❌ loadBlogs error:', e);
     }
     return JSON.parse(localStorage.getItem("blogs") || "[]");
   },
@@ -1506,16 +1571,91 @@ window.storageBridge = {
   
   async loadPortfolio() {
     try {
+      // ابتدا سعی کن از Firebase SDK استفاده کنی
       if (db) {
-        const snap = await get(ref(db, "portfolio/main"));
-        return snap.exists() ? snap.val() : [];
+        console.log('🔍 Attempting to load portfolio from Firebase SDK...');
+        try {
+          const snap = await get(ref(db, "portfolio/main"));
+          if (snap.exists()) {
+            const data = snap.val();
+            console.log('🔥 Firebase portfolio data:', data);
+            console.log('🔥 Data type:', typeof data);
+            console.log('🔥 Is Array:', Array.isArray(data));
+            
+            // اگر داده آرایه نیست، آن را به آرایه تبدیل کن
+            if (!Array.isArray(data)) {
+              console.warn('⚠️ Portfolio data is not an array, converting...');
+              // اگر object است، value های آن را به آرایه تبدیل کن
+              if (typeof data === 'object' && data !== null) {
+                return Object.values(data);
+              }
+              return [];
+            }
+            return data;
+          } else {
+            console.log('📭 No portfolio data in Firebase');
+          }
+        } catch (sdkError) {
+          console.warn('⚠️ Firebase SDK error, trying REST API:', sdkError);
+          
+          // اگر SDK کار نکرد، از REST API استفاده کن
+          try {
+            const restUrl = 'https://iliya-official-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio/main.json';
+            console.log('🌐 Fetching from REST API:', restUrl);
+            
+            const response = await fetch(restUrl);
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log('✅ REST API response:', data);
+            
+            if (data) {
+              if (!Array.isArray(data)) {
+                if (typeof data === 'object' && data !== null) {
+                  return Object.values(data);
+                }
+                return [];
+              }
+              return data;
+            }
+            console.log('📭 No data from REST API');
+          } catch (restError) {
+            console.error('❌ REST API failed:', restError);
+          }
+        }
+      } else {
+        console.warn('⚠️ Firebase database not initialized, using localStorage');
       }
-      try { return JSON.parse(localStorage.getItem("portfolio") || "[]"); }
-      catch(e){ return []; }
+      
+      // Fallback to localStorage
+      try { 
+        const localData = JSON.parse(localStorage.getItem("portfolio") || "[]");
+        console.log('💾 Loading from localStorage:', localData);
+        return localData;
+      }
+      catch(e){ 
+        console.error('❌ localStorage parse error:', e);
+        return []; 
+      }
     } catch (error) {
-      console.error('Portfolio load error:', error);
-      showNotification('❌ Error loading portfolio: ' + error.message, 'error');
-      return [];
+      console.error('❌ Portfolio load error:', error);
+      console.error('❌ Error details:', {
+        message: error.message,
+        code: error.code,
+        stack: error.stack
+      });
+      
+      // در صورت خطای Firebase، از localStorage استفاده کن
+      try {
+        const localData = JSON.parse(localStorage.getItem("portfolio") || "[]");
+        console.log('💾 Fallback to localStorage after error:', localData);
+        return localData;
+      } catch (e) {
+        console.error('❌ localStorage fallback failed:', e);
+        return [];
+      }
     }
   },
   async deletePortfolio(id, idx) {
@@ -1607,16 +1747,34 @@ if (auth) {
 }
 
 console.info("✅ Firebase bridge ready (about + blog + portfolio + contact)");
+console.info("🌐 Current URL:", window.location.href);
+console.info("🔌 Database connected:", !!db);
+console.info("🔐 Auth initialized:", !!auth);
+
 // After bridge is ready, trigger initial loads that depend on storageBridge
 try {
+  console.log('🚀 Starting initial data load...');
+  
   if (typeof window.loadAbout === 'function') {
+    console.log('📖 Loading About...');
     window.loadAbout();
   }
+  
   if (typeof window.loadPublicBlogs === 'function') {
+    console.log('📝 Loading Blogs...');
     window.loadPublicBlogs(true);
   }
+  
+  if (typeof window.loadPortfolio === 'function') {
+    console.log('🎨 Loading Portfolio...');
+    window.loadPortfolio().then(() => {
+      console.log('✅ Portfolio load completed');
+    }).catch(err => {
+      console.error('❌ Portfolio load failed:', err);
+    });
+  }
 } catch (e) {
-  console.warn('Post-bridge initial load failed', e);
+  console.error('❌ Post-bridge initial load failed:', e);
 }
 </script>
 <!-- End Firebase Script -->
