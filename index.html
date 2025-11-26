@@ -1092,15 +1092,30 @@ async function editPortfolio(index) {
 window.editPortfolio = editPortfolio;
 
 /* --- loadPortfolio: render public gallery and attach open handlers --- */
+let _portfolioLoadInProgress = false;
 async function loadPortfolio() {
-  const galleryTrack = document.querySelector('.gallery-track');
-  if (!galleryTrack) return;
-  galleryTrack.innerHTML = '';
+  // جلوگیری از اجرای همزمان دوبار
+  if (_portfolioLoadInProgress) {
+    console.log('⏳ Portfolio load already in progress, skipping...');
+    return;
+  }
+  
+  _portfolioLoadInProgress = true;
+  
+  try {
+    const galleryTrack = document.querySelector('.gallery-track');
+    if (!galleryTrack) {
+      _portfolioLoadInProgress = false;
+      return;
+    }
+    
+    // فقط پاک کن اگر واقعاً نیاز هست
+    galleryTrack.innerHTML = '';
 
-  const items = await (window.storageBridge?.loadPortfolio?.() || []);
-  console.log('📁 Portfolio items loaded:', items);
-  console.log('📁 Is array?', Array.isArray(items));
-  console.log('📁 Items count:', Array.isArray(items) ? items.length : 'Not an array');
+    const items = await (window.storageBridge?.loadPortfolio?.() || []);
+    console.log('📁 Portfolio items loaded:', items);
+    console.log('📁 Is array?', Array.isArray(items));
+    console.log('📁 Items count:', Array.isArray(items) ? items.length : 'Not an array');
   
   if (!Array.isArray(items) || items.length === 0) {
     console.warn('⚠️ No portfolio items to display');
@@ -1160,6 +1175,11 @@ async function loadPortfolio() {
   });
 
   // if you use sliding transform logic elsewhere, ensure galleryTrack children styled accordingly
+  } catch (error) {
+    console.error('❌ loadPortfolio error:', error);
+  } finally {
+    _portfolioLoadInProgress = false;
+  }
 }
 window.loadPortfolio = loadPortfolio;
 
