@@ -8,7 +8,7 @@
 🤝 Open to collaboration on **real-world projects**  
 
 📫 **Email:** alirezamotieerad@gmail.com  
-🔗 **GitHub:** [github.com/iliya-official](https://github.com/iliya-official)
+🔗 **GitHub:** https://iliya-official.github.io/Iliya-official/
 
 ---
 
